@@ -1,5 +1,5 @@
 # booking-travel-services
-Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars.
+Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. A mayores, será necesario un cuarto servicio Payments.
 
 ## Project requirements
 ### REQ1: Microservicios a construir
