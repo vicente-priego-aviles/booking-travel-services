@@ -1,16 +1,11 @@
 package com.mercedesbenz.basedomains.dto;
 
-import lombok.Data;
-
 import java.util.List;
 import java.util.UUID;
 
-@Data
-public class CarDto {
+public class RoomDto {
     private UUID id;
-    private String brand;
-    private String model;
-    private String license;
-    private Long costPerDay;
+    private String title;
+    private String peopleCapacity;
     private List<AvailabilityDto> availabilities;
 }

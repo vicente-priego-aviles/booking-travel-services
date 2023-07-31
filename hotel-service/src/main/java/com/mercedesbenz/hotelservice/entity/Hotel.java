@@ -1,4 +1,4 @@
-package com.mercedesbenz.carservice.entity;
+package com.mercedesbenz.hotelservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,24 +11,18 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table
-public class Car {
+public class Hotel {
     @Id
     private UUID id;
-
-    private String brand;
-
-    private String model;
-
-    private String license;
-
-    private Long costPerDay;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private List<Availability> availabilities;
+    private String name;
+    private String direction;
+    private Long costPerNight;
+    @OneToMany (cascade = CascadeType.PERSIST)
+    private List<Room> rooms;
 
     @PrePersist
     public void onCreate() {
