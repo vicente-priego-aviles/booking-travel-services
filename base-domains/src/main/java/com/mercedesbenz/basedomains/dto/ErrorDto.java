@@ -12,4 +12,6 @@ import lombok.Setter;
 public class ErrorDto {
     private String code;
     private String message;
+    private Long time;
+    private String uri;
 }

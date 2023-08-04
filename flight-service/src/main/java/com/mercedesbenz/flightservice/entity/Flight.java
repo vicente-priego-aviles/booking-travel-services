@@ -28,6 +28,7 @@ public class Flight {
     private String arrivalAirportCode;
     private String arrivalAirportName;
     private Long arrivalTime;
+    private Long remainingSeats;
     private Long cost;
 
     @PrePersist
