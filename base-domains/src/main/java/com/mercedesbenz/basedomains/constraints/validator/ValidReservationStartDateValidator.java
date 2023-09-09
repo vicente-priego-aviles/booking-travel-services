@@ -1,7 +1,6 @@
 package com.mercedesbenz.basedomains.constraints.validator;
 
 import com.mercedesbenz.basedomains.constraints.ValidReservationStartDate;
-import com.mercedesbenz.basedomains.dto.hotel.RoomReservationFiltersDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -14,9 +13,7 @@ public class ValidReservationStartDateValidator implements ConstraintValidator<V
 
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(startDate);
-        Calendar minTime = Calendar.getInstance();
-        minTime.set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DATE), 12, 0, 0);
 
-        return (minTime.getTimeInMillis() == startDate || time.after(minTime));
+        return (time.get(Calendar.HOUR_OF_DAY) == 12 || time.get(Calendar.MINUTE) == 0);
     }
 }

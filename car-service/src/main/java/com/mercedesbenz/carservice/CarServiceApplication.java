@@ -7,9 +7,12 @@ import io.swagger.v3.oas.annotations.info.License;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.web.reactive.function.client.WebClient;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.mercedesbenz.carservice, com.mercedesbenz.basedomains"})
 @OpenAPIDefinition(
 		info = @Info(
 				title = "Car Travel Booking API Documentation",
@@ -26,8 +29,9 @@ import org.springframework.context.annotation.Bean;
 				)
 		)
 )
+@EnableFeignClients
+@EnableKafka
 public class CarServiceApplication {
-
 	@Bean
 	public ModelMapper modelMapper(){
 		return new ModelMapper();

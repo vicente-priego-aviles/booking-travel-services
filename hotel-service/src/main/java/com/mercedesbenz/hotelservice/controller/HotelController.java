@@ -3,6 +3,7 @@ package com.mercedesbenz.hotelservice.controller;
 import com.mercedesbenz.basedomains.dto.hotel.RoomReservationFiltersDto;
 import com.mercedesbenz.basedomains.dto.hotel.HotelDto;
 import com.mercedesbenz.basedomains.dto.ResponseDto;
+import com.mercedesbenz.hotelservice.service.APIClient;
 import com.mercedesbenz.hotelservice.service.HotelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.UUID;

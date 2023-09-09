@@ -13,9 +13,7 @@ public class ValidReservationEndDateValidator implements ConstraintValidator<Val
 
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(endDate);
-        Calendar maxTime = Calendar.getInstance();
-        maxTime.set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DATE), 10, 0, 0);
 
-        return (time.before(maxTime) || maxTime.getTimeInMillis() == endDate);
+        return (time.get(Calendar.HOUR_OF_DAY) == 10 && time.get(Calendar.MINUTE) == 0);
     }
 }

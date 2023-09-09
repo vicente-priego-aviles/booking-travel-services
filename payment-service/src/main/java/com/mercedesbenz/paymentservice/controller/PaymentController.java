@@ -1,0 +1,42 @@
+package com.mercedesbenz.paymentservice.controller;
+
+import com.mercedesbenz.basedomains.dto.ResponseDto;
+import com.mercedesbenz.paymentservice.service.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+@Tag(
+        name = "API REST for Payments",
+        description = "API to pay for your travel reservations"
+)
+@RestController
+@RequestMapping("/api/payments")
+@AllArgsConstructor
+public class PaymentController {
+
+    private PaymentService paymentService;
+
+    @Operation(
+            summary = "Pay Reservation ID",
+            description = "Start payment of the reservation with identifier ID"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status 200 OK"
+    )
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto> pay(@PathVariable UUID id) {
+        ResponseDto response = new ResponseDto(null, paymentService.payReservation(id));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+}

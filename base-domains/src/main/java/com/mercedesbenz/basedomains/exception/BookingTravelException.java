@@ -1,4 +1,4 @@
-package com.mercedesbenz.basedomains.exceptions;
+package com.mercedesbenz.basedomains.exception;
 
 import lombok.Getter;
 import lombok.Setter;

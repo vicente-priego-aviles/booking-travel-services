@@ -2,6 +2,8 @@ package com.mercedesbenz.flightservice.controller;
 
 import com.mercedesbenz.basedomains.dto.flight.FlightDto;
 import com.mercedesbenz.basedomains.dto.ResponseDto;
+import com.mercedesbenz.basedomains.dto.flight.ReservationDto;
+import com.mercedesbenz.flightservice.kafka.ReservationProducer;
 import com.mercedesbenz.flightservice.service.FlightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,6 +27,7 @@ import java.util.UUID;
 public class FlightBookingController {
 
     private FlightService flightService;
+    private ReservationProducer reservationProducer;
 
     @Operation(
             summary = "Insert a collection of Flights",
@@ -94,5 +97,21 @@ public class FlightBookingController {
     public ResponseEntity<ResponseDto> bookFlight(@PathVariable UUID flightId){
         ResponseDto response = new ResponseDto(null, flightService.bookFlight(flightId));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "Get reservation by ID",
+            description = "Check if a reservation ID exists"
+    )
+    @GetMapping("/book/check/{reservationID}")
+    public ResponseEntity<ResponseDto> checkReservationID(@PathVariable UUID reservationID) {
+        ResponseDto response = new ResponseDto(null, flightService.checkReservation(reservationID));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<ResponseDto> test() {
+        ResponseDto response = new ResponseDto(null, "flight-booking");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -14,7 +14,7 @@ public class RoomDto {
     private String title;
     @NotEmpty(message = "People Capacity of Room is required")
     @Min(value = 1, message = "People Capacity must be at least 1")
-    private String peopleCapacity;
+    private Long peopleCapacity;
     @NotEmpty(message = "Availabilities is required")
     private List<AvailabilityDto> availabilities;
 }

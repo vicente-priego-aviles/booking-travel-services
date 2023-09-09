@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  service-registry:
+    container_name: service-registry
+    build:
+      context: ./service-registry/
+      dockerfile: Dockerfile
+    networks:
+      booking-travel-net:
+    restart: on-failure
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway/
+      dockerfile: Dockerfile
+    ports:
+      - "9191:9191"
+    networks:
+      booking-travel-net:
+    restart: on-failure
+  config-server:
+    container_name: config-server
+    build:
+      context: ./config-server/
+      dockerfile: Dockerfile
+    networks:
+      booking-travel-net:
+    restart: on-failure
+  flight-service:
+    container_name: flight-service
+    build:
+      context: ./flight-service/
+      dockerfile: Dockerfile
+    networks:
+      booking-travel-net:
+    restart: no
+  hotel-service:
+    container_name: hotel-service
+    build:
+      context: ./hotel-service/
+      dockerfile: Dockerfile
+    networks:
+      booking-travel-net:
+    restart: no
+  car-service:
+    container_name: car-service
+    build:
+      context: ./car-service/
+      dockerfile: Dockerfile
+    networks:
+      booking-travel-net:
+    restart: no
+networks:
+  booking-travel-net:

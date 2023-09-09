@@ -8,8 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.mercedesbenz.flightservice, com.mercedesbenz.basedomains"})
 @OpenAPIDefinition(
 		info = @Info(
 				title = "Flight Travel API Documentation",
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 				)
 		)
 )
+@EnableKafka
 public class FlightServiceApplication {
 
 	@Bean

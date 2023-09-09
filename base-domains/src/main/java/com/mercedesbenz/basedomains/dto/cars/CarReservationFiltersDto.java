@@ -3,14 +3,21 @@ package com.mercedesbenz.basedomains.dto.cars;
 import com.mercedesbenz.basedomains.constraints.ValidReservationEndDate;
 import com.mercedesbenz.basedomains.constraints.ValidReservationStartDate;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 public class CarReservationFiltersDto {
-    @NotEmpty(message = "Start date is required")
+    @NotNull(message = "Reservation ID is required")
+    private UUID reservationID;
+
+    @NotNull(message = "Start date is required")
     @ValidReservationStartDate
     private Long startDate;
-    @NotEmpty(message = "End date is required")
+
+    @NotNull(message = "End date is required")
     @ValidReservationEndDate
     private Long endDate;
 }

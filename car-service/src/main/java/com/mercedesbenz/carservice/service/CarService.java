@@ -1,5 +1,6 @@
 package com.mercedesbenz.carservice.service;
 
+import com.mercedesbenz.basedomains.dto.Status;
 import com.mercedesbenz.basedomains.dto.cars.CarDto;
 import com.mercedesbenz.basedomains.dto.cars.CarReservationFiltersDto;
 import com.mercedesbenz.basedomains.dto.cars.ReservationDto;
@@ -13,4 +14,6 @@ public interface CarService {
     public CarDto findOne(UUID id);
     public List<ReservationDto> getAllBookings();
     public ReservationDto bookCar(UUID carId, CarReservationFiltersDto carReservationFiltersDto);
+    public void cancelReservation(UUID id);
+    public void updateReservationStatus(UUID id, Status status);
 }
