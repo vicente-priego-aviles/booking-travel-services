@@ -40,3 +40,10 @@ To connect to Kafka topics, once Docker engine is up:
 - Ensure that containers kafka1 and zoo1 are up, or make them up by: docker up kafka1 / zoo1.
 - Use command: "$ docker exec -it kafka1 bash" -> To enter the container shell
 - Use: "$ kafka-console-consumer --bootstrap-server localhost:9092 --topic topic_name --from-beginning" -> to read messages.
+
+Delete topic:
+- First list current available topics: "$ kafka-topics --list --bootstrap-server localhost:9092"
+- Delete one of the topics: "$ kafka-topics --bootstrap-server localhost:9092 --delete --topic <topic-name>"
+
+Manually create a topic:
+- Create one new topic: "$ kafka-topics --bootstrap-server localhost:9092 --topic <topic-name> --create --partitions 3 --replication-factor 1"
