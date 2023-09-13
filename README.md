@@ -32,3 +32,11 @@ La única documentación que tienes que proporcionar es en los endpoints, todo l
 ## Project exclusions
 ### EXC1: No frontend
 Sólo haz la parte de back, no necesitamos ningún front, las pruebas las haremos con Postman.
+
+
+# Connections
+## Connect to Kafka topics
+To connect to Kafka topics, once Docker engine is up:
+- Ensure that containers kafka1 and zoo1 are up, or make them up by: docker up kafka1 / zoo1.
+- Use command: "$ docker exec -it kafka1 bash" -> To enter the container shell
+- Use: "$ kafka-console-consumer --bootstrap-server localhost:9092 --topic topic_name --from-beginning" -> to read messages.
