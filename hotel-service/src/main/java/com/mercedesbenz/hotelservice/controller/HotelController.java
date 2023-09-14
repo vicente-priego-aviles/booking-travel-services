@@ -23,7 +23,7 @@ import java.util.UUID;
         description = "API to insert possible hotel/rooms bookable, get them and book a room in a hotel"
 )
 @RestController
-@RequestMapping("/api/hotels-booking")
+@RequestMapping("api/hotels-booking")
 @AllArgsConstructor
 public class HotelController {
     private HotelService hotelService;

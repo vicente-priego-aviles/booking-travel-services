@@ -1,4 +1,4 @@
-package com.mercedesbenz.carservice.kafka;
+package com.mercedesbenz.flightservice.kafka;
 
 import com.mercedesbenz.basedomains.dto.ReservationDto;
 import com.mercedesbenz.basedomains.dto.Status;
@@ -17,12 +17,12 @@ public class PaymentReservationConsumer {
 
     private final Logger LOGGER = LoggerFactory.getLogger(PaymentReservationConsumer.class);
 
-    private FlightService flightService;
+    private final FlightService flightService;
 
     @Value("${topic.name.consumer.payments}")
     private String topicName;
 
-    @KafkaListener(topics = "{topic.name.consumer.payments}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${topic.name.consumer.payments}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(ConsumerRecord<String, ReservationDto> payload) {
         LOGGER.info("key: {}", payload.key());
         LOGGER.info("Headers: {}", payload.headers());

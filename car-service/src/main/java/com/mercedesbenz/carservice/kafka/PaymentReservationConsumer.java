@@ -17,12 +17,12 @@ public class PaymentReservationConsumer {
 
     private final Logger LOGGER = LoggerFactory.getLogger(PaymentReservationConsumer.class);
 
-    private CarService carService;
+    private final CarService carService;
 
     @Value("${topic.name.consumer.payments}")
     private String topicName;
 
-    @KafkaListener(topics = "{topic.name.consumer.payments}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${topic.name.consumer.payments}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(ConsumerRecord<String, ReservationDto> payload) {
         LOGGER.info("key: {}", payload.key());
         LOGGER.info("Headers: {}", payload.headers());

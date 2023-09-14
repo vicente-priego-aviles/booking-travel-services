@@ -20,7 +20,7 @@ public class ReservationProducer {
     private final KafkaTemplate<String, ReservationDto> kafkaTemplate;
 
     public void send(ReservationDto reservation) {
-        LOGGER.info("Reservation sent from PAYMENT service: " + reservation.getId());
+        LOGGER.info("Reservation sent from PAYMENT service: {} with status: {}", reservation.getId(), reservation.getStatus());
         kafkaTemplate.send(topicName, reservation.getId().toString(), reservation);
     }
 

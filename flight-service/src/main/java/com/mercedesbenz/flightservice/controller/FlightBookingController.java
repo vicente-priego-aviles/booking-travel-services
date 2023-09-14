@@ -2,8 +2,6 @@ package com.mercedesbenz.flightservice.controller;
 
 import com.mercedesbenz.basedomains.dto.flight.FlightDto;
 import com.mercedesbenz.basedomains.dto.ResponseDto;
-import com.mercedesbenz.basedomains.dto.flight.ReservationDto;
-import com.mercedesbenz.flightservice.kafka.ReservationProducer;
 import com.mercedesbenz.flightservice.service.FlightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,12 +20,11 @@ import java.util.UUID;
         description = "API to insert possible flights bookable, get them and book a flight"
 )
 @RestController
-@RequestMapping("/api/flights-booking")
+@RequestMapping("api/flights-booking")
 @AllArgsConstructor
 public class FlightBookingController {
 
     private FlightService flightService;
-    private ReservationProducer reservationProducer;
 
     @Operation(
             summary = "Insert a collection of Flights",

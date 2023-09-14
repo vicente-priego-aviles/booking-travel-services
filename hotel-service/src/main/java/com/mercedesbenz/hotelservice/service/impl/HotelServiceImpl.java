@@ -145,6 +145,17 @@ public class HotelServiceImpl implements HotelService {
                     }
                 }
 
+                LOGGER.debug("HotelServiceImpl.bookRoom: trying to use FLIGHT-SERVICE API");
+                ResponseDto reservationResponse = apiClient.bookCheckReservationID(roomReservationFiltersDto.getReservationID());
+                LOGGER.debug("HotelServiceImpl.bookRoom: ended call to FLIGHT-SERVICE API");
+                UUID reservationID = null;
+                if (reservationResponse != null && reservationResponse.getData() != null) {
+                    reservationID = UUID.fromString(reservationResponse.getData().toString());
+                }
+                if (reservationID == null) {
+                    throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID().toString());
+                }
+
                 if (availabilityBeforeReservation != null) {
                     availabilityBeforeReservation.setRoom(room);
                     availabilitiesToSaveWithRoom.add(availabilityBeforeReservation);
@@ -159,16 +170,6 @@ public class HotelServiceImpl implements HotelService {
                 room.setAvailabilities(availabilitiesToSaveWithRoom);
                 room = roomRepository.save(room);
 
-                LOGGER.debug("HotelServiceImpl.bookRoom: trying to use FLIGHT-SERVICE API");
-                ResponseDto reservationResponse = apiClient.bookCheckReservationID(roomReservationFiltersDto.getReservationID());
-                LOGGER.debug("HotelServiceImpl.bookRoom: ended call to FLIGHT-SERVICE API");
-                UUID reservationID = null;
-                if (reservationResponse != null && reservationResponse.getData() != null) {
-                    reservationID = UUID.fromString(reservationResponse.getData().toString());
-                }
-                if (reservationID == null) {
-                    throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID().toString());
-                }
                 reservation = new Reservation();
                 reservation.setId(roomReservationFiltersDto.getReservationID());
                 reservation.setRoom(room);
@@ -187,7 +188,7 @@ public class HotelServiceImpl implements HotelService {
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    public void bookRoomCircuitBreakerFallback(Exception exception) {
+    public ReservationDto bookRoomCircuitBreakerFallback(UUID roomId, RoomReservationFiltersDto roomReservationFiltersDto, Throwable exception) {
         LOGGER.error("Exception handled by HotelServiceImpl.bookRoomCircuitBreakerFallback", exception);
         throw new ServiceException("FLIGHT-SERVICE");
     }

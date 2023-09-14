@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -20,11 +17,25 @@ import java.util.UUID;
         description = "API to pay for your travel reservations"
 )
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("api/payments")
 @AllArgsConstructor
 public class PaymentController {
 
     private PaymentService paymentService;
+
+    @Operation(
+            summary = "Get all payment reservations",
+            description = "Get all the payment reservations with the status of the flight, hotel and car reservation."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status 200 OK"
+    )
+    @GetMapping
+    public ResponseEntity<ResponseDto> getAll() {
+        ResponseDto response = new ResponseDto(null, paymentService.getAllReservations());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @Operation(
             summary = "Pay Reservation ID",
@@ -34,7 +45,7 @@ public class PaymentController {
             responseCode = "200",
             description = "HTTP Status 200 OK"
     )
-    @GetMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<ResponseDto> pay(@PathVariable UUID id) {
         ResponseDto response = new ResponseDto(null, paymentService.payReservation(id));
         return new ResponseEntity<>(response, HttpStatus.OK);

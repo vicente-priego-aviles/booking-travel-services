@@ -7,8 +7,18 @@ services:
       context: ./service-registry/
       dockerfile: Dockerfile
     networks:
-      booking-travel-net:
+      - booking-travel-net
     restart: on-failure
+  config-server:
+    container_name: config-server
+    build:
+      context: ./config-server/
+      dockerfile: Dockerfile
+    networks:
+      - booking-travel-net
+    restart: on-failure
+    depends_on:
+      - service-registry
   api-gateway:
     container_name: api-gateway
     build:
@@ -17,39 +27,49 @@ services:
     ports:
       - "9191:9191"
     networks:
-      booking-travel-net:
+      - booking-travel-net
     restart: on-failure
-  config-server:
-    container_name: config-server
-    build:
-      context: ./config-server/
-      dockerfile: Dockerfile
-    networks:
-      booking-travel-net:
-    restart: on-failure
+    depends_on:
+      - config-server
   flight-service:
     container_name: flight-service
     build:
       context: ./flight-service/
       dockerfile: Dockerfile
     networks:
-      booking-travel-net:
+      - booking-travel-net
     restart: no
+    depends_on:
+      - api-gateway
   hotel-service:
     container_name: hotel-service
     build:
       context: ./hotel-service/
       dockerfile: Dockerfile
     networks:
-      booking-travel-net:
+      - booking-travel-net
     restart: no
+    depends_on:
+      - api-gateway
   car-service:
     container_name: car-service
     build:
       context: ./car-service/
       dockerfile: Dockerfile
     networks:
-      booking-travel-net:
+      - booking-travel-net
     restart: no
+    depends_on:
+      - api-gateway
+  payment-service:
+    container_name: payment-service
+    build:
+      context: ./payment-service/
+      dockerfile: Dockerfile
+    networks:
+      - booking-travel-net
+    restart: no
+    depends_on:
+      - api-gateway
 networks:
-  booking-travel-net:
+  booking-travel-net: {}

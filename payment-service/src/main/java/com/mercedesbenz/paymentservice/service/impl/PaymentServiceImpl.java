@@ -11,22 +11,34 @@ import com.mercedesbenz.paymentservice.repository.ReservationRepository;
 import com.mercedesbenz.paymentservice.service.PaymentService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(PaymentServiceImpl.class);
+
     private ReservationRepository reservationRepository;
     private ModelMapper modelMapper;
     private ReservationProducer reservationProducer;
 
     @Override
+    public List<ReservationDto> getAllReservations() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).toList();
+    }
+
+    @Override
     public ReservationDto payReservation(UUID id) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotBookableException("RESERVATION", "id", id.toString()));
         double probability = Math.random();
+        LOGGER.debug("PaymentServiceImpl: payReservation: probability = {}", probability);
         if (reservation.getFlightBooked() == null || !reservation.getFlightBooked()) {
             throw new PaymentException("FLIGHT", "id", reservation.getId().toString());
         }
@@ -48,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    public void addFlightReservation(UUID id, ReservationType reservationType) {
+    public void addReservation(UUID id, ReservationType reservationType) {
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation == null) {
             reservation = new Reservation();

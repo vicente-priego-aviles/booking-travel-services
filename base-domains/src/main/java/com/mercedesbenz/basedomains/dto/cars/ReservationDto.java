@@ -10,4 +10,5 @@ public class ReservationDto {
     private CarDto car;
     private Long startDate;
     private Long endDate;
+    private String status;
 }

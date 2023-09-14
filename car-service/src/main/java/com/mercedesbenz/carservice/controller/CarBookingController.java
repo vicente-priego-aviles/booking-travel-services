@@ -21,7 +21,7 @@ import java.util.UUID;
         description = "API to insert possible cars bookable, get them and book a car"
 )
 @RestController
-@RequestMapping("/api/cars-booking")
+@RequestMapping("api/cars-booking")
 @AllArgsConstructor
 public class CarBookingController {
 

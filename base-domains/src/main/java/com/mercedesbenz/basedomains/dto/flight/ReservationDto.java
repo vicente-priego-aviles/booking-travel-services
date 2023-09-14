@@ -8,4 +8,5 @@ import java.util.UUID;
 public class ReservationDto {
     private UUID id;
     private FlightDto flight;
+    private String status;
 }

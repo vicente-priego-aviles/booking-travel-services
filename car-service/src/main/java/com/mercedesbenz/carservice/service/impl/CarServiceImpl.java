@@ -5,6 +5,7 @@ import com.mercedesbenz.basedomains.dto.Status;
 import com.mercedesbenz.basedomains.dto.cars.CarDto;
 import com.mercedesbenz.basedomains.dto.cars.CarReservationFiltersDto;
 import com.mercedesbenz.basedomains.dto.cars.ReservationDto;
+import com.mercedesbenz.basedomains.exception.BookingTravelException;
 import com.mercedesbenz.basedomains.exception.NotBookableException;
 import com.mercedesbenz.basedomains.exception.ResourceNotFoundException;
 import com.mercedesbenz.basedomains.exception.ServiceException;
@@ -143,6 +144,18 @@ public class CarServiceImpl implements CarService {
                     }
                 }
 
+                LOGGER.info("CarServiceImpl.bookCar: trying to use FLIGHT-SERVICE API");
+                ResponseDto reservationResponse = apiClient.bookCheckReservationID(carReservationFiltersDto.getReservationID());
+                LOGGER.info("CarServiceImpl.bookCar: ended call to FLIGHT-SERVICE API");
+
+                UUID reservationID = null;
+                if (reservationResponse != null && reservationResponse.getData() != null) {
+                    reservationID = UUID.fromString(reservationResponse.getData().toString());
+                }
+                if (reservationID == null) {
+                    throw new NotBookableException("CAR", "reservationID", carReservationFiltersDto.getReservationID().toString());
+                }
+
                 if (availabilityBeforeReservation != null) {
                     availabilityBeforeReservation.setCar(car);
                     availabilitiesToSaveWithCar.add(availabilityBeforeReservation);
@@ -157,17 +170,6 @@ public class CarServiceImpl implements CarService {
                 car.setAvailabilities(availabilitiesToSaveWithCar);
                 car = carRepository.save(car);
 
-                LOGGER.debug("CarServiceImpl.bookCar: trying to use FLIGHT-SERVICE API");
-                ResponseDto reservationResponse = apiClient.bookCheckReservationID(carReservationFiltersDto.getReservationID());
-                LOGGER.debug("CarServiceImpl.bookCar: ended call to FLIGHT-SERVICE API");
-
-                UUID reservationID = null;
-                if (reservationResponse != null && reservationResponse.getData() != null) {
-                    reservationID = UUID.fromString(reservationResponse.getData().toString());
-                }
-                if (reservationID == null) {
-                    throw new NotBookableException("ROOM", "reservationID", carReservationFiltersDto.getReservationID().toString());
-                }
                 reservation = new Reservation();
                 reservation.setId(carReservationFiltersDto.getReservationID());
                 reservation.setCar(car);
@@ -178,17 +180,23 @@ public class CarServiceImpl implements CarService {
 
                 reservationProducer.send(modelMapper.map(reservation, ReservationDto.class));
             } else {
+                LOGGER.error("HOLA-1");
                 throw new NotBookableException("CAR", "id", carId.toString());
             }
         } else {
+            LOGGER.error("HOLA-2");
             throw new NotBookableException("CAR", "id", carId.toString());
         }
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    public void bookCarCircuitBreakerFallback(Exception exception) {
+    public ReservationDto bookCarCircuitBreakerFallback(UUID carId, CarReservationFiltersDto carReservationFiltersDto, Throwable exception) throws Throwable {
         LOGGER.error("Exception handled by CarServiceImpl.bookCarCircuitBreakerFallback", exception);
-        throw new ServiceException("FLIGHT-SERVICE");
+        if (exception instanceof BookingTravelException) {
+            throw exception;
+        } else {
+            throw new ServiceException("FLIGHT-SERVICE");
+        }
     }
 
     @Override
