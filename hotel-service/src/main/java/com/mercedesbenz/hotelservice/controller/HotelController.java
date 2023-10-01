@@ -97,4 +97,10 @@ public class HotelController {
         ResponseDto response = new ResponseDto(null, hotelService.bookRoom(roomId, roomReservationFiltersDto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @PostMapping("/book/cancel/{reservationId}")
+    public ResponseEntity<ResponseDto> cancelBookRoom(@PathVariable UUID reservationId) {
+        hotelService.cancelReservation(reservationId);
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
+    }
 }

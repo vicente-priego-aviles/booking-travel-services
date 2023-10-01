@@ -20,7 +20,7 @@ public class Room {
     private UUID id;
     private String title;
     private Long peopleCapacity;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Availability> availabilities;
     @ManyToOne
     private Hotel hotel;

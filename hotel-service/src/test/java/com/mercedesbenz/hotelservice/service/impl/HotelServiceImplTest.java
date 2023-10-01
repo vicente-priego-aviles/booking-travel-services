@@ -1,11 +1,13 @@
 package com.mercedesbenz.hotelservice.service.impl;
 
 import com.mercedesbenz.basedomains.dto.ResponseDto;
+import com.mercedesbenz.basedomains.dto.Status;
 import com.mercedesbenz.basedomains.dto.hotel.RoomReservationFiltersDto;
 import com.mercedesbenz.hotelservice.entity.Availability;
 import com.mercedesbenz.hotelservice.entity.Hotel;
 import com.mercedesbenz.hotelservice.entity.Reservation;
 import com.mercedesbenz.hotelservice.entity.Room;
+import com.mercedesbenz.hotelservice.kafka.ReservationProducer;
 import com.mercedesbenz.hotelservice.repository.AvailabilityRepository;
 import com.mercedesbenz.hotelservice.repository.ReservationRepository;
 import com.mercedesbenz.hotelservice.repository.RoomRepository;
@@ -31,6 +33,9 @@ import static org.mockito.Mockito.*;
 public class HotelServiceImplTest {
 
     @Mock
+    private ReservationProducer reservationProducer;
+
+    @Mock
     private APIClient apiClient;
 
     @Mock
@@ -52,10 +57,14 @@ public class HotelServiceImplTest {
     ArgumentCaptor<Availability> availabilityArgumentCaptor;
 
     @Captor
+    ArgumentCaptor<Room> roomArgumentCaptor;
+
+    @Captor
     ArgumentCaptor<Reservation> reservationArgumentCaptor;
 
     List<Hotel> hotels;
     Room room;
+    Reservation reservation;
 
     @BeforeEach
     void setUp() {
@@ -81,6 +90,13 @@ public class HotelServiceImplTest {
         rooms.add(room);
         hotel.setRooms(rooms);
         hotels.add(hotel);
+
+        reservation = new Reservation();
+        reservation.setId(UUID.randomUUID());
+        reservation.setStatus(Status.IN_PROGRESS);
+        reservation.setStartDate(1700000000000L);
+        reservation.setEndDate(1750000000000L);
+        reservation.setRoom(room);
     }
 
     @Test
@@ -94,6 +110,7 @@ public class HotelServiceImplTest {
         when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
         when(availabilityRepository.save(any())).thenReturn(null);
         when(reservationRepository.save(any())).thenReturn(null);
+        doNothing().when(reservationProducer).send(any());
         ResponseDto response = new ResponseDto();
         response.setData(id.toString());
         when(apiClient.bookCheckReservationID(any())).thenReturn(response);
@@ -160,6 +177,7 @@ public class HotelServiceImplTest {
         when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
         when(availabilityRepository.save(any())).thenReturn(null);
         when(reservationRepository.save(any())).thenReturn(null);
+        doNothing().when(reservationProducer).send(any());
         ResponseDto response = new ResponseDto();
         response.setData(id.toString());
         when(apiClient.bookCheckReservationID(any())).thenReturn(response);
@@ -246,6 +264,7 @@ public class HotelServiceImplTest {
         when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
         when(availabilityRepository.save(any())).thenReturn(null);
         when(reservationRepository.save(any())).thenReturn(null);
+        doNothing().when(reservationProducer).send(any());
         ResponseDto response = new ResponseDto();
         response.setData(id.toString());
         when(apiClient.bookCheckReservationID(any())).thenReturn(response);
@@ -299,5 +318,24 @@ public class HotelServiceImplTest {
         assertEquals(dateCheck.get(Calendar.HOUR_OF_DAY), argumentDate.get(Calendar.HOUR_OF_DAY), "End HOUR of reservation is not correct");
         assertEquals(dateCheck.get(Calendar.MINUTE), argumentDate.get(Calendar.MINUTE), "End MINUTE of reservation is not correct");
         assertEquals(dateCheck.get(Calendar.SECOND), argumentDate.get(Calendar.SECOND), "End SECOND of reservation is not correct");
+    }
+
+    @Test
+    void cancelReservation() {
+        when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservation));
+        when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
+        when(roomRepository.save(any())).thenReturn(null);
+        when(reservationRepository.save(any())).thenReturn(null);
+
+        hotelService.cancelReservation(UUID.randomUUID());
+
+        verify(roomRepository).save(roomArgumentCaptor.capture());
+        verify(reservationRepository).save(reservationArgumentCaptor.capture());
+
+        assertNotNull(roomArgumentCaptor.getValue());
+        assertNotNull(reservationArgumentCaptor.getValue());
+
+        assertEquals(3, roomArgumentCaptor.getValue().getAvailabilities().size(), "Availability was not correctly added to the ROOM");
+        assertEquals(Status.CANCELLED, reservationArgumentCaptor.getValue().getStatus(), "Reservation status was not updated correctly. It should be CANCELLED and was found" + reservationArgumentCaptor.getValue().getStatus().toString());
     }
 }

@@ -48,6 +48,10 @@ public class PaymentServiceImpl implements PaymentService {
         if (reservation.getCarBooked() == null || !reservation.getCarBooked()) {
             throw new PaymentException("CAR", "id", reservation.getId().toString());
         }
+        if (reservation.getStatus() != Status.IN_PROGRESS) {
+            return modelMapper.map(reservation, ReservationDto.class);
+        }
+
         if (probability < 0.5) {
             // Reservations Paid
             reservation.setStatus(Status.PAID);

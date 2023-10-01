@@ -11,5 +11,6 @@ import lombok.Setter;
 @Setter
 public class ResponseDto {
     private ErrorDto error;
+
     private Object data;
 }

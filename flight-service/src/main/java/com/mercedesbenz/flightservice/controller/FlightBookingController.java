@@ -4,6 +4,9 @@ import com.mercedesbenz.basedomains.dto.flight.FlightDto;
 import com.mercedesbenz.basedomains.dto.ResponseDto;
 import com.mercedesbenz.flightservice.service.FlightService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,7 +35,20 @@ public class FlightBookingController {
     )
     @ApiResponse(
             responseCode = "201",
-            description = "HTTP Status 201 CREATED"
+            description = "HTTP Status 201 CREATED",
+            content = @Content(
+                    schema = @Schema(implementation = ResponseDto.class),
+                    examples = {
+                            @ExampleObject(
+                                    name = "Success response object after inserting list of Flights.",
+                                    value = "{\n" +
+                                            "\t\"error\": null,\n" +
+                                            "\t\"data\": [\n" +
+                                            "\t\t\t{\"id\": \"0000-000-000\", \n\t\t\t\"reference\": \"00MB\", \n\t\t\t\"airline\": \"Lufthansa\", \n\t\t\t\"departureAirportCode\": \"MAD\", \n\t\t\t\"departureAirportName\": \"Madrid\", \n\t\t\t\"departureTime\": 1000000000, \n\t\t\t\"arrivalTime\": 200000000, \n\t\t\t\"arrivalAirportCode\": \"STU\", \n\t\t\t\"arrivalAirportName\": \"Stuttgart\", \n\t\t\t\"cost\": 10, \n\t\t\t\"remainingSeats\", 4}, \n" +
+                                            "\t\t\t{\"id\": \"0000-000-000\", \n\t\t\t\"reference\": \"00MB\", \n\t\t\t\"airline\": \"Lufthansa\", \n\t\t\t\"departureAirportCode\": \"MAD\", \n\t\t\t\"departureAirportName\": \"Madrid\", \n\t\t\t\"departureTime\": 1000000000, \n\t\t\t\"arrivalTime\": 200000000, \n\t\t\t\"arrivalAirportCode\": \"STU\", \n\t\t\t\"arrivalAirportName\": \"Stuttgart\", \n\t\t\t\"cost\": 10, \n\t\t\t\"remainingSeats\", 4}\n\t]\n}"
+                            )
+                    }
+            )
     )
     @PostMapping
     public ResponseEntity<ResponseDto> insertCollectionOfFlights(@RequestBody @Valid List<FlightDto> flights) {
