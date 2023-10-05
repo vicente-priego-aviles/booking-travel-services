@@ -47,3 +47,6 @@ Delete topic:
 
 Manually create a topic:
 - Create one new topic: "$ kafka-topics --bootstrap-server localhost:9092 --topic <topic-name> --create --partitions 3 --replication-factor 1"
+
+# Architecture Diagram
+![Architecture diagram of the solution](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-architecture.jpg)
