@@ -1,6 +1,15 @@
 # booking-travel-services
 Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. A mayores, será necesario un cuarto servicio Payments.
 
+## Installation
+First of all, lets compile the maven project to create the artifacts.
+<pre>$ mvn clean package</pre>
+Now, we build the different docker images.
+<pre>$ docker compose build</pre>
+Now, we create the different docker images.
+<pre>$ docker compose create</pre>
+Now, we can already start the different applications.
+
 ## Project requirements
 ### REQ1: Microservicios a construir
 Uno será el microservicio Fly, para realizar una reserva de un vuelo, otro será el microservicio Hotel, para hacer una reserva del hotel donde me hospedaré durante las vacaciones, y el tercero se llamará Car, para hacer alquilar un coche por el que moverme por Torrevieja. Todos tendrán un objeto de dominio con el mismo nombre, con al menos un id (si quieres puedes meter alguna propiedad más, por el tema de Lombok, pero no te compliques, tienen que ser sencillos), y el id te sugeriría que utilices UUIDs, que son únicos, y así te olvidas del tema de las secuencias de BBDD. 

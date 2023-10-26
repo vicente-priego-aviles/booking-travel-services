@@ -1,9 +1,12 @@
 package com.mercedesbenz.carservice.controller;
 
+import com.mercedesbenz.basedomains.dto.Status;
 import com.mercedesbenz.basedomains.dto.cars.CarDto;
 import com.mercedesbenz.basedomains.dto.ResponseDto;
 import com.mercedesbenz.basedomains.dto.cars.CarReservationFiltersDto;
+import com.mercedesbenz.basedomains.dto.cars.ReservationDto;
 import com.mercedesbenz.carservice.service.CarService;
+import com.mercedesbenz.carservice.stream.ReservationProducer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +29,8 @@ import java.util.UUID;
 public class CarBookingController {
 
     private CarService carService;
+
+    private ReservationProducer reservationProducerTest;
 
     @Operation(
             summary = "Insert a collection of Cars",
@@ -95,5 +100,21 @@ public class CarBookingController {
     public ResponseEntity<ResponseDto> bookCar(@PathVariable UUID carId, @RequestBody @Valid CarReservationFiltersDto carReservationFiltersDto) {
         ResponseDto response = new ResponseDto(null, carService.bookCar(carId, carReservationFiltersDto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<ResponseDto> test() {
+        CarDto carDto = new CarDto();
+        carDto.setId(UUID.randomUUID());
+        carDto.setBrand("Mercedes-Benz");
+        carDto.setModel("AMG GT");
+        ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setId(UUID.randomUUID());
+        reservationDto.setCar(carDto);
+        reservationDto.setStatus(Status.IN_PROGRESS.toString());
+        reservationDto.setStartDate(1000000000000L);
+        reservationDto.setStartDate(3000000000000L);
+        reservationProducerTest.send(reservationDto);
+        return new ResponseEntity<>(new ResponseDto(null, reservationDto), HttpStatus.OK);
     }
 }

@@ -25,6 +25,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class HotelServiceImpl implements HotelService {
 
@@ -54,18 +56,21 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelDto> findAll() {
         List<Hotel> hotels = hotelRepository.findAll();
         return hotels.stream().map((hotel) -> modelMapper.map(hotel, HotelDto.class)).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HotelDto findOne(UUID id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("HOTEL", "id", id.toString()));
         return modelMapper.map(hotel, HotelDto.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservationDto> getAllBookings() {
         List<Reservation> reservations = reservationRepository.findAll();
         return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).toList();

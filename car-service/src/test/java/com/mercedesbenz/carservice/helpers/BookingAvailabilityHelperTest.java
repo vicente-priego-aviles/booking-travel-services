@@ -1,36 +1,24 @@
 package com.mercedesbenz.carservice.helpers;
 
-import com.mercedesbenz.basedomains.dto.ResponseDto;
 import com.mercedesbenz.basedomains.dto.Status;
 import com.mercedesbenz.basedomains.dto.cars.CarReservationFiltersDto;
 import com.mercedesbenz.carservice.entity.Availability;
 import com.mercedesbenz.carservice.entity.Car;
 import com.mercedesbenz.carservice.entity.Reservation;
-import com.mercedesbenz.carservice.helpers.BookingAvailabilityHelper;
 import com.mercedesbenz.carservice.helpers.dto.BookingAvailabilityDto;
-import com.mercedesbenz.carservice.kafka.ReservationProducer;
-import com.mercedesbenz.carservice.repository.AvailabilityRepository;
-import com.mercedesbenz.carservice.repository.CarRepository;
-import com.mercedesbenz.carservice.repository.ReservationRepository;
-import com.mercedesbenz.carservice.service.APIClient;
-import com.mercedesbenz.carservice.service.impl.CarServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingAvailabilityHelperTest {

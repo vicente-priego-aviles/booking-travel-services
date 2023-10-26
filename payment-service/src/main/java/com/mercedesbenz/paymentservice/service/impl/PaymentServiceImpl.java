@@ -14,11 +14,13 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
@@ -29,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     private ReservationProducer reservationProducer;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservationDto> getAllReservations() {
         List<Reservation> reservations = reservationRepository.findAll();
         return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).toList();

@@ -1,0 +1,56 @@
+### Get All Cars
+GET {{hostname}}/car-service/api/cars-booking
+
+### Insert Collection of Cars
+POST {{hostname}}/car-service/api/cars-booking
+Content-Type: application/json
+
+[{
+  "brand": "Mercedes-Benz",
+  "model": "Class A",
+  "license": "AAA-0000",
+  "costPerDay": 89.50,
+  "availabilities": [{
+    "startDate": 1693519200000,
+    "endDate": 1693864800000
+  },{
+    "startDate": 1694296800000,
+    "endDate": 1695420000000
+  }]
+},
+  {
+  "brand": "Mercedes-Benz AMG",
+  "model": "Class EQE",
+  "license": "EQE-0000",
+  "costPerDay": 236.00,
+  "availabilities": [{
+    "startDate": 1695074400000,
+    "endDate": 1695506400000
+  }]
+},
+  {
+  "brand": "Mercedes-Benz AMG",
+  "model": "Class EQS",
+  "license": "SQE-0000",
+  "costPerDay": 298.47,
+  "availabilities": [{
+    "startDate": 1000000000000,
+    "endDate": 3000000000000
+  }]
+}]
+
+### Get a CAR
+GET {{hostname}}/car-service/api/cars-booking/733425f4-4ae6-419c-af68-2acc21f249ad
+
+### Book a CAR
+POST {{hostname}}/car-service/api/cars-booking/book/52f1fa6f-fff6-4ac9-8893-4b4126d3947f
+Content-Type: application/json
+
+{
+  "startDate": 1694772000000,
+  "endDate": 1694937600000,
+  "reservationID": "c2770381-45a8-4be5-82f5-fba7307de6c9"
+}
+
+### Get All RESERVATIONS
+GET {{hostname}}/car-service/api/cars-booking/book

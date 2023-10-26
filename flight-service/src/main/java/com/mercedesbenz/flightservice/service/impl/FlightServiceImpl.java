@@ -14,12 +14,14 @@ import com.mercedesbenz.flightservice.service.FlightService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class FlightServiceImpl implements FlightService {
 
     private FlightRepository flightRepository;
@@ -34,18 +36,21 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FlightDto> findAllAvailable() {
         List<Flight> flights = flightRepository.findAllByRemainingSeatsGreaterThan(0L);
         return flights.stream().map(flight -> modelMapper.map(flight, FlightDto.class)).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FlightDto findOne(UUID id) {
         Flight flight = flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("FLIGHT", "id", id.toString()));
         return modelMapper.map(flight, FlightDto.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservationDto> getAllBookings() {
         List<Reservation> reservations = reservationRepository.findAll();
         return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).toList();
@@ -72,6 +77,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UUID checkReservation(UUID reservationID) {
         Reservation reservation = reservationRepository.findById(reservationID).orElseThrow(() -> new ResourceNotFoundException("RESERVATION", "id", reservationID.toString()));
         return reservation.getId();

@@ -10,7 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.messaging.Message;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.function.Consumer;
 
 @SpringBootApplication(scanBasePackages = {"com.mercedesbenz.carservice, com.mercedesbenz.basedomains"})
 @OpenAPIDefinition(
@@ -40,5 +43,13 @@ public class CarServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CarServiceApplication.class, args);
 	}
+
+	/*@Bean
+	Consumer<Message<?>> input() {
+		return msg -> {
+			System.out.println("\n\nCarServiceApplication - input - message received");
+			System.out.println(msg.getPayload());
+		};
+	}*/
 
 }

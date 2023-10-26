@@ -1,0 +1,60 @@
+### Get All Flights
+GET {{hostname}}/flight-service/api/flights-booking
+
+### Insert Collection of Flights
+POST {{hostname}}/flight-service/api/flights-booking
+Content-Type: application/json
+
+[{
+  "reference": "X-456",
+  "airline": "Iberia",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695024000000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695029400000,
+  "cost": 56790,
+  "remainingSeats": 5
+},
+  {
+  "reference": "G-222",
+  "airline": "Rayaner",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695013200000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695022200000,
+  "cost": 45990,
+  "remainingSeats": 5
+},
+  {
+  "reference": "G-111",
+  "airline": "Iberia",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695052800000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695058200000,
+  "cost": 45990,
+  "remainingSeats": 5
+}]
+
+> {%
+if (response.status === 200 && response.body.data != undefined ) {
+    for (let i = 0; i < response.body.data.length; i++) {
+        if (response.body.data[i].reference == "X-456") {
+            client.global.set("flight_id", response.body.data[i].id);
+            break;
+        }
+    }
+}
+ %}
+
+### Book a FLIGHT
+POST {{hostname}}/flight-service/api/flights-booking/book/{{flight_id}}
+
+### Get All RESERVATIONS
+GET {{hostname}}/flight-service/api/flights-booking/book

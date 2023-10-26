@@ -14,12 +14,13 @@ import com.mercedesbenz.carservice.helpers.dto.BookingAvailabilityDto;
 import com.mercedesbenz.carservice.entity.Availability;
 import com.mercedesbenz.carservice.entity.Car;
 import com.mercedesbenz.carservice.entity.Reservation;
-import com.mercedesbenz.carservice.kafka.ReservationProducer;
+//import com.mercedesbenz.carservice.kafka.ReservationProducer;
 import com.mercedesbenz.carservice.repository.AvailabilityRepository;
 import com.mercedesbenz.carservice.repository.CarRepository;
 import com.mercedesbenz.carservice.repository.ReservationRepository;
 import com.mercedesbenz.carservice.service.APIClient;
 import com.mercedesbenz.carservice.service.CarService;
+import com.mercedesbenz.carservice.stream.ReservationProducer;
 import feign.FeignException;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
@@ -27,12 +28,14 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class CarServiceImpl implements CarService {
 
@@ -43,6 +46,7 @@ public class CarServiceImpl implements CarService {
     private CarRepository carRepository;
     private AvailabilityRepository availabilityRepository;
     private ReservationRepository reservationRepository;
+    //private ReservationProducer reservationProducer;
     private ReservationProducer reservationProducer;
     private BookingAvailabilityHelper bookingAvailabilityHelper;
 
@@ -54,18 +58,21 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CarDto> findAll() {
         List<Car> cars = carRepository.findAll();
         return cars.stream().map((car) -> modelMapper.map(car, CarDto.class)).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CarDto findOne(UUID id) {
         Car car = carRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("CAR", "id", id.toString()));
         return modelMapper.map(car, CarDto.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservationDto> getAllBookings() {
         List<Reservation> reservations = reservationRepository.findAll();
         return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).toList();

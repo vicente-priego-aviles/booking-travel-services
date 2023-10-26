@@ -8,11 +8,11 @@ import com.mercedesbenz.carservice.entity.Car;
 import com.mercedesbenz.carservice.entity.Reservation;
 import com.mercedesbenz.carservice.helpers.BookingAvailabilityHelper;
 import com.mercedesbenz.carservice.helpers.dto.BookingAvailabilityDto;
-import com.mercedesbenz.carservice.kafka.ReservationProducer;
 import com.mercedesbenz.carservice.repository.AvailabilityRepository;
 import com.mercedesbenz.carservice.repository.CarRepository;
 import com.mercedesbenz.carservice.repository.ReservationRepository;
 import com.mercedesbenz.carservice.service.APIClient;
+import com.mercedesbenz.carservice.stream.ReservationProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,9 +64,6 @@ public class CarServiceImplTest {
 
     @Captor
     ArgumentCaptor<Reservation> reservationArgumentCaptor;
-
-    @Captor
-    ArgumentCaptor<Car> carArgumentCaptor;
 
     Car car;
     Reservation reservation;
