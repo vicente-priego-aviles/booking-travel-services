@@ -7,7 +7,7 @@ import com.mercedesbenz.hotelservice.entity.Availability;
 import com.mercedesbenz.hotelservice.entity.Hotel;
 import com.mercedesbenz.hotelservice.entity.Reservation;
 import com.mercedesbenz.hotelservice.entity.Room;
-import com.mercedesbenz.hotelservice.kafka.ReservationProducer;
+import com.mercedesbenz.hotelservice.stream.ReservationProducer;
 import com.mercedesbenz.hotelservice.repository.AvailabilityRepository;
 import com.mercedesbenz.hotelservice.repository.ReservationRepository;
 import com.mercedesbenz.hotelservice.repository.RoomRepository;

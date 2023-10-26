@@ -14,7 +14,6 @@ import com.mercedesbenz.carservice.helpers.dto.BookingAvailabilityDto;
 import com.mercedesbenz.carservice.entity.Availability;
 import com.mercedesbenz.carservice.entity.Car;
 import com.mercedesbenz.carservice.entity.Reservation;
-//import com.mercedesbenz.carservice.kafka.ReservationProducer;
 import com.mercedesbenz.carservice.repository.AvailabilityRepository;
 import com.mercedesbenz.carservice.repository.CarRepository;
 import com.mercedesbenz.carservice.repository.ReservationRepository;
@@ -46,7 +45,6 @@ public class CarServiceImpl implements CarService {
     private CarRepository carRepository;
     private AvailabilityRepository availabilityRepository;
     private ReservationRepository reservationRepository;
-    //private ReservationProducer reservationProducer;
     private ReservationProducer reservationProducer;
     private BookingAvailabilityHelper bookingAvailabilityHelper;
 

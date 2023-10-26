@@ -6,4 +6,4 @@ WORKDIR /app
 
 COPY target/car-service-0.0.1-SNAPSHOT.jar /app/car-service.jar
 
-ENTRYPOINT ["java", "-jar", "car-service.jar", "-Dspring.cloud.stream.default-binder=rabbit"]
+ENTRYPOINT ["java", "-Dspring.cloud.stream.default-binder=${MESSAGE_BROKER}", "-jar", "car-service.jar"]

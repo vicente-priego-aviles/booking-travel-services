@@ -6,4 +6,4 @@ WORKDIR /app
 
 COPY target/hotel-service-0.0.1-SNAPSHOT.jar /app/hotel-service.jar
 
-ENTRYPOINT ["java", "-jar", "hotel-service.jar"]
+ENTRYPOINT ["java", "-Dspring.cloud.stream.default-binder=${MESSAGE_BROKER}", "-jar", "hotel-service.jar"]

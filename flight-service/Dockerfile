@@ -6,4 +6,4 @@ WORKDIR /app
 
 COPY target/flight-service-0.0.1-SNAPSHOT.jar /app/flight-service.jar
 
-ENTRYPOINT ["java", "-jar", "flight-service.jar"]
+ENTRYPOINT ["java", "-Dspring.cloud.stream.default-binder=${MESSAGE_BROKER}", "-jar", "flight-service.jar"]

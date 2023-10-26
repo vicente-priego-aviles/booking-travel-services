@@ -1,8 +1,8 @@
-package com.mercedesbenz.carservice.stream;
+package com.mercedesbenz.flightservice.stream;
 
 import com.mercedesbenz.basedomains.dto.ReservationDto;
 import com.mercedesbenz.basedomains.dto.Status;
-import com.mercedesbenz.carservice.service.CarService;
+import com.mercedesbenz.flightservice.service.FlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class PaymentReservationConsumer {
     private final Logger LOGGER = LoggerFactory.getLogger(PaymentReservationConsumer.class);
 
     @Autowired
-    private CarService carService;
+    private FlightService flightService;
 
     @Bean
     Consumer<Message<ReservationDto>> input() {
@@ -41,11 +41,11 @@ public class PaymentReservationConsumer {
     }
 
     private void cancel(ReservationDto reservation) {
-        carService.cancelReservation(reservation.getId());
+        flightService.cancelReservation(reservation.getId());
     }
 
     private void update(ReservationDto reservation) {
-        carService.updateReservationStatus(reservation.getId(), reservation.getStatus());
+        flightService.updateReservationStatus(reservation.getId(), reservation.getStatus());
     }
 
 }

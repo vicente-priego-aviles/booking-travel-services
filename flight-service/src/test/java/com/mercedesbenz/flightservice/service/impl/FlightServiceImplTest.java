@@ -5,7 +5,7 @@ import com.mercedesbenz.basedomains.dto.flight.ReservationDto;
 import com.mercedesbenz.basedomains.exception.ResourceNotFoundException;
 import com.mercedesbenz.flightservice.entity.Flight;
 import com.mercedesbenz.flightservice.entity.Reservation;
-import com.mercedesbenz.flightservice.kafka.ReservationProducer;
+import com.mercedesbenz.flightservice.stream.ReservationProducer;
 import com.mercedesbenz.flightservice.repository.FlightRepository;
 import com.mercedesbenz.flightservice.repository.ReservationRepository;
 import com.mercedesbenz.flightservice.service.FlightService;

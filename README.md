@@ -2,13 +2,69 @@
 Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. A mayores, será necesario un cuarto servicio Payments.
 
 ## Installation
+
+### Building the project
+By default, the project is configured to use RabbitMQ as message broker. In case you would like to use Kafka, go to section "Using Kafka".
 First of all, lets compile the maven project to create the artifacts.
 <pre>$ mvn clean package</pre>
-Now, we build the different docker images.
-<pre>$ docker compose build</pre>
-Now, we create the different docker images.
+Now, we build and create all docker images.
 <pre>$ docker compose create</pre>
-Now, we can already start the different applications.
+After this, we can start running the containers. To see the different logs, the recommended approach is to open a PowerShell window for each docker to start. We will use the "-a" parameter on the docker start to attach the terminal to the logs, so we can track the logs visually.
+<br><br>
+
+### Starting the project
+We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
+<pre>$ docker start rabbitmq</pre>
+Now, we start the Service Registry microservice, so that the following microservices can register in the Eureka Server hold in that docker:
+<pre>$ docker start service-registry -a</pre>
+<b>ONLY</b> when we see in the logs the project ended, we start the API Gateway that will be the front door for all the client HTTP requests:
+<pre>$ docker start api-gateway -a</pre>
+<b>ONLY</b> when API Gateway has finished starting up we can continue. Now we are ready to start cars, flights, hotels and payments microservices. They can be started in any way between them.
+<pre>$ docker start flight-service -a</pre>
+<pre>$ docker start car-service -a</pre>
+<pre>$ docker start hotel-service -a</pre>
+<pre>$ docker start payment-service -a</pre>
+With this, installation is finished. To see how to use IntelliJ HTTP Client plugin and testing instructions, go to "Testing the project" section.
+
+### Using Kafka
+With the project it is provided a .env file. This file contains one variable setted by default to 'rabbit' as following:
+<pre>MESSAGE_BROKER=rabbit</pre>
+In case of wanting to use Kafka, you should change it to value 'kafka' to leave it as following:
+<pre>MESSAGE_BROKER=kafka</pre>
+After performing this change, you must run again the command:
+<pre>$ docker compose create</pre>
+Now, go back to section "Starting the project".
+
+## Testing the project
+
+### Access Databases
+### Access RabbitMQ
+To access the RabbitMQ UI access using the following URL.
+<pre>http://localhost:15672/</pre>
+| Field           | Value |
+|-----------------|-------|
+| <b>User</b>     | guest |
+| <b>Password</b> | guest |
+
+### Access Kafka
+Unfortunately, there is no UI installed for Kafka. In this case, we have to access the kafka docker and use the Kafka CLI clients.
+<pre>$ docker exec -it kafka bash</pre>
+The we navigate to where we have the sh kafka cli scripts:
+<pre>$ cd /opt/bitnami/kafka/bin/</pre>
+Next, here you can find useful commands for Kafka:
+<pre>
+# List topics created on default bootstrap server
+$ kafka-topics.sh --bootstrap-server localhost:9092 --list
+<br>
+# Create a topic on default bootstrap server (replace "topic_name" with corresponding name). Remember it would be also good practice to specify other params like partitions number and replication factor.
+$ kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --create
+<br>
+# Delete a topic on default bootstrap server (replace "topic_name" with corresponding name)
+$ kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --delete
+<br>
+# Consume from earlist all events in topic on default bootstrap server (replace "topic_name" with corresponding name)
+$ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name --from-beginning
+</pre>
 
 ## Project requirements
 ### REQ1: Microservicios a construir

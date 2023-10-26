@@ -1,6 +1,6 @@
-package com.mercedesbenz.carservice.stream;
+package com.mercedesbenz.paymentservice.stream;
 
-import com.mercedesbenz.basedomains.dto.cars.ReservationDto;
+import com.mercedesbenz.basedomains.dto.ReservationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class ReservationProducer {
     private StreamBridge streamBridge;
 
     public void send(ReservationDto reservationDto) {
-        LOGGER.info("Reservation sent from CARS service: " + reservationDto.getId());
+        LOGGER.info("Reservation sent from PAYMENT service: " + reservationDto.getId());
         streamBridge.send("output", reservationDto);
     }
 }
