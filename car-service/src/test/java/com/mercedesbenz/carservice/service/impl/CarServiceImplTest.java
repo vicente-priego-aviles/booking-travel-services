@@ -67,7 +67,7 @@ public class CarServiceImplTest {
 
     Car car;
     Reservation reservation;
-    Reservation reservationToCancell;
+    Reservation reservationToCancel;
 
     @BeforeEach
     void setUp() {
@@ -94,12 +94,12 @@ public class CarServiceImplTest {
         reservation.setStartDate(1672570800000L);
         reservation.setEndDate(1675155600000L);
 
-        reservationToCancell = new Reservation();
-        reservationToCancell.setId(UUID.randomUUID());
-        reservationToCancell.setCar(car);
-        reservationToCancell.setStatus(Status.IN_PROGRESS);
-        reservationToCancell.setStartDate(1000000000000L);
-        reservationToCancell.setEndDate(1500000000000L);
+        reservationToCancel = new Reservation();
+        reservationToCancel.setId(UUID.randomUUID());
+        reservationToCancel.setCar(car);
+        reservationToCancel.setStatus(Status.IN_PROGRESS);
+        reservationToCancel.setStartDate(1000000000000L);
+        reservationToCancel.setEndDate(1500000000000L);
     }
 
     @Test
@@ -230,7 +230,7 @@ public class CarServiceImplTest {
 
     @Test
     void cancelReservation() {
-        when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservationToCancell));
+        when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservationToCancel));
         when(carRepository.findById(any())).thenReturn(Optional.ofNullable(car));
 
         carService.cancelReservation(UUID.randomUUID());

@@ -20,7 +20,7 @@ public class HotelReservationConsumer {
     private PaymentService paymentService;
 
     @Bean
-    Consumer<Message<ReservationDto>> inputHotels() {
+    Consumer<Message<ReservationDto>> inputHotel() {
         return message -> {
             LOGGER.info("Headers: {}", message.getHeaders());
             LOGGER.info("Headers.Id: {}", message.getHeaders().getId());

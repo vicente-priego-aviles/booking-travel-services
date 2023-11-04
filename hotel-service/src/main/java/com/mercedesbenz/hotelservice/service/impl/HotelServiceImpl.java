@@ -12,6 +12,8 @@ import com.mercedesbenz.hotelservice.entity.Availability;
 import com.mercedesbenz.hotelservice.entity.Hotel;
 import com.mercedesbenz.hotelservice.entity.Reservation;
 import com.mercedesbenz.hotelservice.entity.Room;
+import com.mercedesbenz.hotelservice.helpers.BookingAvailabilityHelper;
+import com.mercedesbenz.hotelservice.helpers.dto.BookingAvailabilityDto;
 import com.mercedesbenz.hotelservice.repository.AvailabilityRepository;
 import com.mercedesbenz.hotelservice.repository.HotelRepository;
 import com.mercedesbenz.hotelservice.repository.ReservationRepository;
@@ -47,6 +49,7 @@ public class HotelServiceImpl implements HotelService {
     private AvailabilityRepository availabilityRepository;
     private ReservationRepository reservationRepository;
     private ReservationProducer reservationProducer;
+    private BookingAvailabilityHelper bookingAvailabilityHelper;
 
     @Override
     public List<HotelDto> insertAll(List<HotelDto> hotels) {
@@ -79,124 +82,48 @@ public class HotelServiceImpl implements HotelService {
     @Retry(name = "${spring.application.name}", fallbackMethod = "bookRoomCircuitBreakerFallback")
     @Override
     public ReservationDto bookRoom(UUID roomId, RoomReservationFiltersDto roomReservationFiltersDto) {
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("ROOM", "id", roomId.toString()));
-        Availability availabilityBookable = null;
-        Reservation reservation = null;
+        LOGGER.debug("HotelServiceImpl.bookRoom: trying to use FLIGHT-SERVICE API");
+        ResponseDto reservationResponse = apiClient.bookCheckReservationID(roomReservationFiltersDto.getReservationID());
+        LOGGER.debug("HotelServiceImpl.bookRoom: ended call to FLIGHT-SERVICE API");
 
-        Calendar dateNormalizator = Calendar.getInstance();
-
-        dateNormalizator.setTimeInMillis(roomReservationFiltersDto.getStartDate());
-        dateNormalizator.set(dateNormalizator.get(Calendar.YEAR), dateNormalizator.get(Calendar.MONTH), dateNormalizator.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
-        roomReservationFiltersDto.setStartDate(dateNormalizator.getTimeInMillis());
-
-        dateNormalizator.setTimeInMillis(roomReservationFiltersDto.getEndDate());
-        dateNormalizator.set(dateNormalizator.get(Calendar.YEAR), dateNormalizator.get(Calendar.MONTH), dateNormalizator.get(Calendar.DAY_OF_MONTH), 10, 0, 0);
-        roomReservationFiltersDto.setEndDate(dateNormalizator.getTimeInMillis());
-
-
-        if (room != null && room.getAvailabilities() != null) {
-            List<Availability> availabilitiesToSaveWithRoom = new ArrayList<>();
-            for (Availability availability : room.getAvailabilities()) {
-                if (availability.getStartDate() <= roomReservationFiltersDto.getStartDate() && availability.getEndDate() >= roomReservationFiltersDto.getEndDate()) {
-                    availabilityBookable = availability;
-                } else {
-                    availabilitiesToSaveWithRoom.add(availability);
-                }
-            }
-            if (availabilityBookable != null &&
-                availabilityBookable.getStartDate() <= roomReservationFiltersDto.getStartDate() &&
-                roomReservationFiltersDto.getEndDate() <= availabilityBookable.getEndDate()) {
-                Availability availabilityBeforeReservation = null;
-                Availability availabilityAfterReservation = null;
-                Calendar calendarHelper = Calendar.getInstance();
-
-                Calendar availabilityBookableStartDate = Calendar.getInstance();
-                Calendar availabilityBookableEndDate = Calendar.getInstance();
-                Calendar roomReservationFiltersDtoStartDate = Calendar.getInstance();
-                Calendar roomReservationFiltersDtoEndDate = Calendar.getInstance();
-                availabilityBookableStartDate.setTimeInMillis(availabilityBookable.getStartDate());
-                availabilityBookableEndDate.setTimeInMillis(availabilityBookable.getEndDate());
-                roomReservationFiltersDtoStartDate.setTimeInMillis(roomReservationFiltersDto.getStartDate());
-                roomReservationFiltersDtoEndDate.setTimeInMillis(roomReservationFiltersDto.getEndDate());
-
-                if (availabilityBookableStartDate.get(Calendar.YEAR) == roomReservationFiltersDtoStartDate.get(Calendar.YEAR)  &&
-                        availabilityBookableStartDate.get(Calendar.MONTH) == roomReservationFiltersDtoStartDate.get(Calendar.MONTH) &&
-                        availabilityBookableStartDate.get(Calendar.DAY_OF_MONTH) == roomReservationFiltersDtoStartDate.get(Calendar.DAY_OF_MONTH) &&
-                        availabilityBookableStartDate.get(Calendar.HOUR) == roomReservationFiltersDtoStartDate.get(Calendar.HOUR) &&
-                        availabilityBookableStartDate.get(Calendar.MINUTE) == roomReservationFiltersDtoStartDate.get(Calendar.MINUTE)) {
-                    availabilityAfterReservation = new Availability();
-                    calendarHelper.setTimeInMillis(roomReservationFiltersDto.getEndDate());
-                    calendarHelper.set(calendarHelper.get(Calendar.YEAR), calendarHelper.get(Calendar.MONTH), calendarHelper.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
-                    availabilityAfterReservation.setStartDate(calendarHelper.getTimeInMillis());
-                    if (availabilityBookableEndDate.get(Calendar.YEAR) == roomReservationFiltersDtoEndDate.get(Calendar.YEAR)  &&
-                            availabilityBookableEndDate.get(Calendar.MONTH) == roomReservationFiltersDtoEndDate.get(Calendar.MONTH) &&
-                            availabilityBookableEndDate.get(Calendar.DAY_OF_MONTH) == roomReservationFiltersDtoEndDate.get(Calendar.DAY_OF_MONTH) &&
-                            availabilityBookableEndDate.get(Calendar.HOUR) == roomReservationFiltersDtoEndDate.get(Calendar.HOUR) &&
-                            availabilityBookableEndDate.get(Calendar.MINUTE) == roomReservationFiltersDtoEndDate.get(Calendar.MINUTE)) {
-                        availabilityAfterReservation = null;
-                    } else if (roomReservationFiltersDtoEndDate.getTimeInMillis() < availabilityBookableEndDate.getTimeInMillis()) {
-                        calendarHelper.setTimeInMillis(availabilityBookableEndDate.getTimeInMillis());
-                        calendarHelper.set(calendarHelper.get(Calendar.YEAR), calendarHelper.get(Calendar.MONTH), calendarHelper.get(Calendar.DAY_OF_MONTH), 10, 0, 0);
-                        availabilityAfterReservation.setEndDate(calendarHelper.getTimeInMillis());
-                    } else {
-                        availabilityAfterReservation = null;
-                    }
-                } else {
-                    availabilityBeforeReservation = new Availability();
-                    availabilityBeforeReservation.setStartDate(availabilityBookable.getStartDate());
-                    calendarHelper.setTimeInMillis(roomReservationFiltersDto.getStartDate());
-                    calendarHelper.set(calendarHelper.get(Calendar.YEAR), calendarHelper.get(Calendar.MONTH), calendarHelper.get(Calendar.DAY_OF_MONTH), 10, 0, 0);
-                    availabilityBeforeReservation.setEndDate(calendarHelper.getTimeInMillis());
-
-                    if (roomReservationFiltersDtoEndDate.getTimeInMillis() < availabilityBookableEndDate.getTimeInMillis()) {
-                        availabilityAfterReservation = new Availability();
-                        calendarHelper.setTimeInMillis(roomReservationFiltersDto.getEndDate());
-                        calendarHelper.set(calendarHelper.get(Calendar.YEAR), calendarHelper.get(Calendar.MONTH), calendarHelper.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
-                        availabilityAfterReservation.setStartDate(calendarHelper.getTimeInMillis());
-                        availabilityAfterReservation.setEndDate(availabilityBookable.getEndDate());
-                    }
-                }
-
-                LOGGER.debug("HotelServiceImpl.bookRoom: trying to use FLIGHT-SERVICE API");
-                ResponseDto reservationResponse = apiClient.bookCheckReservationID(roomReservationFiltersDto.getReservationID());
-                LOGGER.debug("HotelServiceImpl.bookRoom: ended call to FLIGHT-SERVICE API");
-                UUID reservationID = null;
-                if (reservationResponse != null && reservationResponse.getData() != null) {
-                    reservationID = UUID.fromString(reservationResponse.getData().toString());
-                }
-                if (reservationID == null) {
-                    throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID().toString());
-                }
-
-                if (availabilityBeforeReservation != null) {
-                    availabilityBeforeReservation.setRoom(room);
-                    availabilitiesToSaveWithRoom.add(availabilityBeforeReservation);
-                    availabilityRepository.save(availabilityBeforeReservation);
-                }
-                if (availabilityAfterReservation != null) {
-                    availabilityAfterReservation.setRoom(room);
-                    availabilitiesToSaveWithRoom.add(availabilityAfterReservation);
-                    availabilityRepository.save(availabilityAfterReservation);
-                }
-                availabilityRepository.delete(availabilityBookable);
-                room.setAvailabilities(availabilitiesToSaveWithRoom);
-                room = roomRepository.save(room);
-
-                reservation = new Reservation();
-                reservation.setId(roomReservationFiltersDto.getReservationID());
-                reservation.setRoom(room);
-                reservation.setStartDate(roomReservationFiltersDto.getStartDate());
-                reservation.setEndDate(roomReservationFiltersDto.getEndDate());
-                reservation.setStatus(Status.IN_PROGRESS);
-                reservationRepository.save(reservation);
-
-                reservationProducer.send(modelMapper.map(reservation, ReservationDto.class));
-            } else {
-                throw new NotBookableException("ROOM", "id", roomId.toString());
-            }
-        } else {
-            throw new NotBookableException("ROOM", "id", roomId.toString());
+        UUID reservationID = null;
+        if (reservationResponse != null && reservationResponse.getData() != null) {
+            reservationID = UUID.fromString(reservationResponse.getData().toString());
         }
+        if (reservationID == null) {
+            throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID().toString());
+        }
+
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("ROOM", "id", roomId.toString()));
+        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
+        Availability availabilityBeforeReservation = bookingAvailabilityDto.getAvailabilityBeforeReservation();
+        Availability availabilityAfterReservation = bookingAvailabilityDto.getAvailabilityAfterReservation();
+        Availability availabilityBookable = bookingAvailabilityDto.getAvailabilityBookable();
+        List<Availability> availabilitiesToSaveWithRoom = bookingAvailabilityDto.getAvailabilitiesToSaveWithRoom();
+
+        if (availabilityBeforeReservation != null) {
+            availabilityBeforeReservation.setRoom(room);
+            availabilitiesToSaveWithRoom.add(availabilityBeforeReservation);
+            availabilityRepository.save(availabilityBeforeReservation);
+        }
+        if (availabilityAfterReservation != null) {
+            availabilityAfterReservation.setRoom(room);
+            availabilitiesToSaveWithRoom.add(availabilityAfterReservation);
+            availabilityRepository.save(availabilityAfterReservation);
+        }
+        availabilityRepository.delete(availabilityBookable);
+        room.setAvailabilities(availabilitiesToSaveWithRoom);
+        room = roomRepository.save(room);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(roomReservationFiltersDto.getReservationID());
+        reservation.setRoom(room);
+        reservation.setStartDate(roomReservationFiltersDto.getStartDate());
+        reservation.setEndDate(roomReservationFiltersDto.getEndDate());
+        reservation.setStatus(Status.IN_PROGRESS);
+        reservationRepository.save(reservation);
+
+        reservationProducer.send(modelMapper.map(reservation, ReservationDto.class));
         return modelMapper.map(reservation, ReservationDto.class);
     }
 

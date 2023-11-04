@@ -27,7 +27,7 @@ Now, we start the Service Registry microservice, so that the following microserv
 With this, installation is finished. To see how to use IntelliJ HTTP Client plugin and testing instructions, go to "Testing the project" section.
 
 ### Using Kafka
-With the project it is provided a .env file. This file contains one variable setted by default to 'rabbit' as following:
+With the project it is provided a .env file. This file contains one variable set by default to 'rabbit' as following:
 <pre>MESSAGE_BROKER=rabbit</pre>
 In case of wanting to use Kafka, you should change it to value 'kafka' to leave it as following:
 <pre>MESSAGE_BROKER=kafka</pre>
@@ -38,6 +38,16 @@ Now, go back to section "Starting the project".
 ## Testing the project
 
 ### Access Databases
+To access the databases, we have enabled the h2-console web client on each of the projects. For that, we have cleared the access on each of the IPs directly to the microservice. So with the following URLs you can access the h2 client:
+
+| Microservice           | URL                              | Database URL            | Username | Password |
+|------------------------|----------------------------------|-------------------------|----------|----------|
+| <b>Flight Service</b>  | http://localhost:8081/h2-console | jdbc:h2:mem:flights_db  | sa       | password |
+| <b>Hotel Service</b>   | http://localhost:8082/h2-console | jdbc:h2:mem:hotels_db   | sa       | password |
+| <b>Car Service</b>     | http://localhost:8083/h2-console | jdbc:h2:mem:cars_db     | sa       | password |
+| <b>Payment Service</b> | http://localhost:8084/h2-console | jdbc:h2:mem:payments_db | sa       | password |
+
+
 ### Access RabbitMQ
 To access the RabbitMQ UI access using the following URL.
 <pre>http://localhost:15672/</pre>
@@ -64,6 +74,19 @@ $ kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_name --delete
 <br>
 # Consume from earlist all events in topic on default bootstrap server (replace "topic_name" with corresponding name)
 $ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name --from-beginning
+</pre>
+
+### Access Swagger
+To access the Swagger files, you can use the following URLs:
+<pre>
+# Flight Service
+http://localhost:8081/swagger-ui
+# Hotel Service
+http://localhost:8082/swagger-ui
+# Car Service
+http://localhost:8083/swagger-ui
+# Payment Service
+http://localhost:8084/swagger-ui
 </pre>
 
 ## Project requirements

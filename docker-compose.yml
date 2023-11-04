@@ -74,6 +74,8 @@ services:
     build:
       context: ./flight-service/
       dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
     networks:
       - booking-travel-net
     restart: no
@@ -86,6 +88,8 @@ services:
     build:
       context: ./hotel-service/
       dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
     networks:
       - booking-travel-net
     restart: no
@@ -98,6 +102,8 @@ services:
     build:
       context: ./car-service/
       dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
     networks:
       - booking-travel-net
     restart: no
@@ -110,6 +116,8 @@ services:
     build:
       context: ./payment-service/
       dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
     networks:
       - booking-travel-net
     restart: no

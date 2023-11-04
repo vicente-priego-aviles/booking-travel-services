@@ -50,13 +50,13 @@ Content-Type: application/json
 GET {{hostname}}/hotel-service/api/hotels-booking/4f8292b3-4d7e-4738-96ea-56bd84775cb7
 
 ### Book a HOTEL
-POST {{hostname}}/hotel-service/api/hotels-booking/book/0f0068ae-8d59-4e81-8d4b-fc9fc3b154b8
+POST {{hostname}}/hotel-service/api/hotels-booking/book/0f61d493-6b00-43c4-951c-40c906ebd961
 Content-Type: application/json
 
 {
-  "startDate": 1694772000000,
-  "endDate": 1694937600000,
-  "reservationID": "e6b90b5d-9e18-493e-8b8b-732fb88b7305"
+  "startDate": 1673308800000,
+  "endDate": 1673776800000,
+  "reservationID": "b395a8d8-83d7-4c8d-a675-430a2db67793"
 }
 
 ### Get All RESERVATIONS

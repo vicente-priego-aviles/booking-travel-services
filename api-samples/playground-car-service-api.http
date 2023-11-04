@@ -43,13 +43,13 @@ Content-Type: application/json
 GET {{hostname}}/car-service/api/cars-booking/733425f4-4ae6-419c-af68-2acc21f249ad
 
 ### Book a CAR
-POST {{hostname}}/car-service/api/cars-booking/book/52f1fa6f-fff6-4ac9-8893-4b4126d3947f
+POST {{hostname}}/car-service/api/cars-booking/book/6bc3f112-3268-428e-9e08-b86efbb9f92d
 Content-Type: application/json
 
 {
-  "startDate": 1694772000000,
-  "endDate": 1694937600000,
-  "reservationID": "c2770381-45a8-4be5-82f5-fba7307de6c9"
+  "startDate": 1673308800000,
+  "endDate": 1673776800000,
+  "reservationID": "b395a8d8-83d7-4c8d-a675-430a2db67793"
 }
 
 ### Get All RESERVATIONS

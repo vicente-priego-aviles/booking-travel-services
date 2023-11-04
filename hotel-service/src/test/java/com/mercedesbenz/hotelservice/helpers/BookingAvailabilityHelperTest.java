@@ -1,35 +1,31 @@
-package com.mercedesbenz.carservice.helpers;
+package com.mercedesbenz.hotelservice.helpers;
 
-import com.mercedesbenz.basedomains.dto.Status;
-import com.mercedesbenz.basedomains.dto.cars.CarReservationFiltersDto;
-import com.mercedesbenz.carservice.entity.Availability;
-import com.mercedesbenz.carservice.entity.Car;
-import com.mercedesbenz.carservice.entity.Reservation;
-import com.mercedesbenz.carservice.helpers.dto.BookingAvailabilityDto;
+import com.mercedesbenz.basedomains.dto.ResponseDto;
+import com.mercedesbenz.basedomains.dto.hotel.RoomReservationFiltersDto;
+import com.mercedesbenz.hotelservice.entity.Availability;
+import com.mercedesbenz.hotelservice.entity.Hotel;
+import com.mercedesbenz.hotelservice.entity.Room;
+import com.mercedesbenz.hotelservice.helpers.dto.BookingAvailabilityDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingAvailabilityHelperTest {
-
     @InjectMocks
     private BookingAvailabilityHelper bookingAvailabilityHelper;
-
-    Car car;
+    Room room;
 
     @BeforeEach
-    void setUp() {
+    void setUp(){
         Availability availability = new Availability();
         availability.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
         availability.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
@@ -39,23 +35,26 @@ public class BookingAvailabilityHelperTest {
         List<Availability> availabilities = new ArrayList<>();
         availabilities.add(availability);
         availabilities.add(availability2);
-        car = new Car();
-        car.setBrand("Mercedes-Benz");
-        car.setModel("Clase A");
-        car.setLicense("0000 AAA");
-        car.setCostPerDay(5999L);
-        car.setAvailabilities(availabilities);
+        Hotel hotel = new Hotel();
+        hotel.setName("Hotel A");
+        hotel.setCostPerNight(59L);
+        hotel.setDirection("Building A, Number 123, Fake Street");
+        room = new Room();
+        room.setTitle("Room A");
+        room.setPeopleCapacity(2L);
+        room.setAvailabilities(availabilities);
+        room.setHotel(hotel);
     }
 
     @Test
-    void bookCarReservationAtTheStartOfAvailability() {
-        CarReservationFiltersDto carReservationFiltersDto = new CarReservationFiltersDto();
-        carReservationFiltersDto.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
-        carReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
+    void bookRoomReservationAtTheStartOfAvailability() {
+        RoomReservationFiltersDto roomReservationFiltersDto = new RoomReservationFiltersDto();
+        roomReservationFiltersDto.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
+        roomReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id);
 
-        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(car, carReservationFiltersDto);
+        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
 
         Calendar dateCheck = Calendar.getInstance();
         Calendar argumentDate = Calendar.getInstance();
@@ -79,18 +78,18 @@ public class BookingAvailabilityHelperTest {
         assertEquals(dateCheck.get(Calendar.SECOND), argumentDate.get(Calendar.SECOND), "End SECOND of availability before reservation is not correct");
 
         assertNull(bookingAvailabilityDto.getAvailabilityBeforeReservation(), "AvailabilityBeforeReservation should be null and it is not");
-        assertEquals(1, bookingAvailabilityDto.getAvailabilitiesToSaveWithCar().size(), "AvailabilitiesToSaveWithCar should only have 1 element");
+        assertEquals(1, bookingAvailabilityDto.getAvailabilitiesToSaveWithRoom().size(), "AvailabilitiesToSaveWithRoom should only have 1 element");
     }
 
     @Test
     void bookRoomReservationInTheMiddleOfAvailability() {
-        CarReservationFiltersDto carReservationFiltersDto = new CarReservationFiltersDto();
-        carReservationFiltersDto.setStartDate(1672916400000L); // 05/01/2023 12:00:00 CET
-        carReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
+        RoomReservationFiltersDto roomReservationFiltersDto = new RoomReservationFiltersDto();
+        roomReservationFiltersDto.setStartDate(1672916400000L); // 05/01/2023 12:00:00 CET
+        roomReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id);
 
-        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(car, carReservationFiltersDto);
+        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
 
         Calendar dateCheck = Calendar.getInstance();
         Calendar argumentDate = Calendar.getInstance();
@@ -131,18 +130,18 @@ public class BookingAvailabilityHelperTest {
         assertEquals(dateCheck.get(Calendar.MINUTE), argumentDate.get(Calendar.MINUTE));
         assertEquals(dateCheck.get(Calendar.SECOND), argumentDate.get(Calendar.SECOND));
 
-        assertEquals(1, bookingAvailabilityDto.getAvailabilitiesToSaveWithCar().size(), "AvailabilitiesToSaveWithCar should only have 1 element");
+        assertEquals(1, bookingAvailabilityDto.getAvailabilitiesToSaveWithRoom().size(), "AvailabilitiesToSaveWithRoom should only have 1 element");
     }
 
     @Test
     void bookRoomReservationAtTheEndOfAvailability() {
-        CarReservationFiltersDto carReservationFiltersDto = new CarReservationFiltersDto();
-        carReservationFiltersDto.setStartDate(1673348400000L); // 10/01/2023 12:00:00 CET
-        carReservationFiltersDto.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
+        RoomReservationFiltersDto roomReservationFiltersDto = new RoomReservationFiltersDto();
+        roomReservationFiltersDto.setStartDate(1673348400000L); // 10/01/2023 12:00:00 CET
+        roomReservationFiltersDto.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id);
 
-        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(car, carReservationFiltersDto);
+        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
 
         Calendar dateCheck = Calendar.getInstance();
         Calendar argumentDate = Calendar.getInstance();
@@ -166,7 +165,6 @@ public class BookingAvailabilityHelperTest {
         assertEquals(dateCheck.get(Calendar.SECOND), argumentDate.get(Calendar.SECOND), "End SECOND of availability before reservation is not correct");
 
         assertNull(bookingAvailabilityDto.getAvailabilityAfterReservation(), "AvailabilityAfterReservation should be null and it is not");
-        assertEquals(1, bookingAvailabilityDto.getAvailabilitiesToSaveWithCar().size(), "AvailabilitiesToSaveWithCar should only have 1 element");
+        assertEquals(1, bookingAvailabilityDto.getAvailabilitiesToSaveWithRoom().size(), "AvailabilitiesToSaveWithRoom should only have 1 element");
     }
-
 }
