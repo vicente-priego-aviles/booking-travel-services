@@ -1,0 +1,191 @@
+### Insert Collection of Cars
+POST {{hostname}}/car-service/api/cars-booking
+Content-Type: application/json
+
+[{
+  "brand": "Mercedes-Benz",
+  "model": "Class A",
+  "license": "AAA-0000",
+  "costPerDay": 89.50,
+  "availabilities": [{
+    "startDate": 1693519200000,
+    "endDate": 1693864800000
+  },{
+    "startDate": 1694296800000,
+    "endDate": 1695420000000
+  }]
+},
+  {
+    "brand": "Mercedes-Benz AMG",
+    "model": "Class EQE",
+    "license": "EQE-0000",
+    "costPerDay": 236.00,
+    "availabilities": [{
+      "startDate": 1695074400000,
+      "endDate": 1695506400000
+    }]
+  },
+  {
+    "brand": "Mercedes-Benz AMG",
+    "model": "Class EQS",
+    "license": "SQE-0000",
+    "costPerDay": 298.47,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  }]
+
+> {%
+    if (response.status === 201 && response.body.data != undefined ) {
+        for (let i = 0; i < response.body.data.length; i++) {
+            if (response.body.data[i].license == "SQE-0000") {
+                client.global.set("car_id", response.body.data[i].id);
+                break;
+            }
+        }
+    }
+%}
+
+### Insert Collection of HOTELS
+POST {{hostname}}/hotel-service/api/hotels-booking
+Content-Type: application/json
+
+[{
+  "name": "Grand Hotel",
+  "direction": "Calle Falsa 123, Torrevieja 03183 - Alicante",
+  "costPerNight": 6300,
+  "rooms": [{
+    "title": "Habitacion individual A",
+    "peopleCapacity": 1,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  },{
+    "title": "Habitacion doble B",
+    "peopleCapacity": 2,
+    "availabilities": [{
+      "startDate": 1694988000000,
+      "endDate": 1695592800000
+    }]
+  }]
+},
+  {
+    "name": "Little Hotel",
+    "direction": "Calle Fake 123, Torrevieja 03183 - Alicante",
+    "costPerNight": 4599,
+    "rooms": [{
+      "title": "Habitacion Gold",
+      "peopleCapacity": 2,
+      "availabilities": [{
+        "startDate": 1695160800000,
+        "endDate": 1695592800000
+      }]
+    },{
+      "title": "Habitacion Diamond",
+      "peopleCapacity": 4,
+      "availabilities": [{
+        "startDate": 1695420000000,
+        "endDate": 1695592800000
+      }]
+    }]
+  }]
+> {%
+    if (response.status === 201 && response.body.data != undefined ) {
+        for (let i = 0; i < response.body.data.length; i++) {
+            if (response.body.data[i].name == "Grand Hotel" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
+                for (let j = 0; j < response.body.data[i].rooms.length; j++) {
+                    if (response.body.data[i].rooms[j].title == "Habitacion individual A") {
+                        client.global.set("room_id", response.body.data[i].rooms[j].id);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+%}
+
+### Insert Collection of Flights
+POST {{hostname}}/flight-service/api/flights-booking
+Content-Type: application/json
+
+[{
+  "reference": "X-456",
+  "airline": "Iberia",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695024000000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695029400000,
+  "cost": 56790,
+  "remainingSeats": 5
+},
+  {
+  "reference": "G-222",
+  "airline": "Rayaner",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695013200000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695022200000,
+  "cost": 45990,
+  "remainingSeats": 5
+},
+  {
+  "reference": "G-111",
+  "airline": "Iberia",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695052800000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695058200000,
+  "cost": 45990,
+  "remainingSeats": 5
+}]
+
+> {%
+if (response.status === 201 && response.body.data != undefined ) {
+    for (let i = 0; i < response.body.data.length; i++) {
+        if (response.body.data[i].reference == "X-456") {
+            client.global.set("flight_id", response.body.data[i].id);
+            break;
+        }
+    }
+}
+ %}
+
+### Book a FLIGHT
+POST {{hostname}}/flight-service/api/flights-booking/book/{{flight_id}}
+
+> {%
+if (response.status === 200 && response.body.data != undefined ) {
+    client.global.set("reservation_id", response.body.data.id);
+}
+ %}
+
+### Book a HOTEL
+POST {{hostname}}/hotel-service/api/hotels-booking/book/{{room_id}}
+Content-Type: application/json
+
+{
+  "startDate": 1673308800000,
+  "endDate": 1673776800000,
+  "reservationID": "{{reservation_id}}"
+}
+
+### Book a CAR
+POST {{hostname}}/car-service/api/cars-booking/book/{{car_id}}
+Content-Type: application/json
+
+{
+  "startDate": 1694772000000,
+  "endDate": 1694937600000,
+  "reservationID": "{{reservation_id}}"
+}
+
+### Pay a reservation
+POST {{hostname}}/payment-service/api/payments/{{reservation_id}}

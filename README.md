@@ -36,16 +36,20 @@ After performing this change, you must run again the command:
 Now, go back to section "Starting the project".
 
 ## Testing the project
+To test the project, we have added some IntelliJ HTTP Client files. You can find them under the "api-samples" folder. Inside the "playground" folder you can find the individual HTTP calls for each of the microservices. Directly on the "api-samples" folder you will find 3 .http files that authomatically perform reservations:
+* <b>00-insert-all-and-book-only-flight.http</b>: Inserts data for Flights, Hotels and Cars and runs the first reservation for a Flight.
+* <b>01-insert-all-and-book-all</b>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (without status print)
+* <b>02-insert-all-and-book-all-with-status-trace</b> <i>(Recommended)</i>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (with status print: saving the Payment status after each reservation).
 
 ### Access Databases
 To access the databases, we have enabled the h2-console web client on each of the projects. For that, we have cleared the access on each of the IPs directly to the microservice. So with the following URLs you can access the h2 client:
 
-| Microservice           | URL                              | Database URL            | Username | Password |
-|------------------------|----------------------------------|-------------------------|----------|----------|
-| <b>Flight Service</b>  | http://localhost:8081/h2-console | jdbc:h2:mem:flights_db  | sa       | password |
-| <b>Hotel Service</b>   | http://localhost:8082/h2-console | jdbc:h2:mem:hotels_db   | sa       | password |
-| <b>Car Service</b>     | http://localhost:8083/h2-console | jdbc:h2:mem:cars_db     | sa       | password |
-| <b>Payment Service</b> | http://localhost:8084/h2-console | jdbc:h2:mem:payments_db | sa       | password |
+| Microservice           | URL                              | Database URL           | Username | Password |
+|------------------------|----------------------------------|------------------------|----------|----------|
+| <b>Flight Service</b>  | http://localhost:8081/h2-console | jdbc:h2:mem:flights_db | sa       | password |
+| <b>Hotel Service</b>   | http://localhost:8082/h2-console | jdbc:h2:mem:hotels_db  | sa       | password |
+| <b>Car Service</b>     | http://localhost:8083/h2-console | jdbc:h2:mem:cars_db    | sa       | password |
+| <b>Payment Service</b> | http://localhost:8084/h2-console | jdbc:h2:mem:payment_db | sa       | password |
 
 
 ### Access RabbitMQ
@@ -77,9 +81,9 @@ $ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name
 </pre>
 
 ### Access Swagger
-To access the Swagger files, you can use the following URLs:
+To access the Swagger files, you can use the following URLs. We recommend accessing the Flight Service Swagger files, as we have included some response Examples only on that microservice for time saving purposes.
 <pre>
-# Flight Service
+# Flight Service (Recommended)
 http://localhost:8081/swagger-ui
 # Hotel Service
 http://localhost:8082/swagger-ui

@@ -44,12 +44,4 @@ public class CarServiceApplication {
 		SpringApplication.run(CarServiceApplication.class, args);
 	}
 
-	/*@Bean
-	Consumer<Message<?>> input() {
-		return msg -> {
-			System.out.println("\n\nCarServiceApplication - input - message received");
-			System.out.println(msg.getPayload());
-		};
-	}*/
-
 }

@@ -101,20 +101,4 @@ public class CarBookingController {
         ResponseDto response = new ResponseDto(null, carService.bookCar(carId, carReservationFiltersDto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<ResponseDto> test() {
-        CarDto carDto = new CarDto();
-        carDto.setId(UUID.randomUUID());
-        carDto.setBrand("Mercedes-Benz");
-        carDto.setModel("AMG GT");
-        ReservationDto reservationDto = new ReservationDto();
-        reservationDto.setId(UUID.randomUUID());
-        reservationDto.setCar(carDto);
-        reservationDto.setStatus(Status.IN_PROGRESS.toString());
-        reservationDto.setStartDate(1000000000000L);
-        reservationDto.setStartDate(3000000000000L);
-        reservationProducerTest.send(reservationDto);
-        return new ResponseEntity<>(new ResponseDto(null, reservationDto), HttpStatus.OK);
-    }
 }

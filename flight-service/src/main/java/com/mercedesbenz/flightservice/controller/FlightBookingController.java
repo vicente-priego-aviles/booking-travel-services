@@ -121,10 +121,4 @@ public class FlightBookingController {
         ResponseDto response = new ResponseDto(null, flightService.checkReservation(reservationID));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<ResponseDto> test() {
-        ResponseDto response = new ResponseDto(null, "flight-booking");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 }
