@@ -22,13 +22,13 @@ public class FlightReservationConsumer {
     @Bean
     Consumer<Message<ReservationDto>> inputFlight() {
         return message -> {
-            LOGGER.info("Headers: {}", message.getHeaders());
-            LOGGER.info("Headers.Id: {}", message.getHeaders().getId());
-            LOGGER.info("ReservationDto: {}", message.getPayload());
-            LOGGER.info("message.getPayload().getId(): " + message.getPayload().getId());
-            LOGGER.info("message.getPayload().getStatus(): " + message.getPayload().getStatus());
-            LOGGER.info("message.getPayload().getFlight().getId(): " + message.getPayload().getFlight().getId());
-            LOGGER.info("message.getPayload().getFlight().getReference(): " + message.getPayload().getFlight().getReference());
+            LOGGER.info("{} - Headers: {}", this.getClass().getName(), message.getHeaders());
+            LOGGER.info("{} - Headers.Id: {}", this.getClass().getName(), message.getHeaders().getId());
+            LOGGER.info("{} - ReservationDto: {}", this.getClass().getName(), message.getPayload());
+            LOGGER.info("{} - message.getPayload().getId(): {}", this.getClass().getName(), message.getPayload().getId());
+            LOGGER.info("{} - message.getPayload().getStatus(): {}", this.getClass().getName(), message.getPayload().getStatus());
+            LOGGER.info("{} - message.getPayload().getFlight().getId(): {}", this.getClass().getName(), message.getPayload().getFlight().getId());
+            LOGGER.info("{} - message.getPayload().getFlight().getReference(): {}", this.getClass().getName(), message.getPayload().getFlight().getReference());
             paymentService.addReservation(message.getPayload().getId(), ReservationType.FLIGHT);
         };
     }

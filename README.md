@@ -1,5 +1,5 @@
 # booking-travel-services
-Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. A mayores, será necesario un cuarto servicio Payments.
+Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. In addition, a fourth microservice Payments is develop to show Saga management, consuming/producing message throw Kafka/RabbitMQ in an abstract way.
 
 ## Installation
 
@@ -94,51 +94,39 @@ http://localhost:8084/swagger-ui
 </pre>
 
 ## Project requirements
-### REQ1: Microservicios a construir
-Uno será el microservicio Fly, para realizar una reserva de un vuelo, otro será el microservicio Hotel, para hacer una reserva del hotel donde me hospedaré durante las vacaciones, y el tercero se llamará Car, para hacer alquilar un coche por el que moverme por Torrevieja. Todos tendrán un objeto de dominio con el mismo nombre, con al menos un id (si quieres puedes meter alguna propiedad más, por el tema de Lombok, pero no te compliques, tienen que ser sencillos), y el id te sugeriría que utilices UUIDs, que son únicos, y así te olvidas del tema de las secuencias de BBDD. 
+### REQ1: Microservices to build
+One will be the Flight microservice, to do the reservation of a flight, another one will be the Hotel microservice, to the the reservation of a hostel to stay during the trip, and a third one will be the Car microservice to rent a car to move around the city. All of them will have a domain object with the same name with at least one ID (if you want you can have other properties, to also include Lombok, but it is not the main goal); and the ID would be suggested to use UUIDs, that are unique and then you can forget about BBDD sequences.
 
 ### REQ2: BBDD
-Utiliza BBDD en memoria de tipo H2
+As DB use in memory of type H2
 
-### REQ3.A: Proceso reserva
-La idea es que un usuario que quiera contratar un viaje, pueda realizar previamente una reserva de un Vuelo, un Hotel y un Coche, en ese orden, por lo que como pista, usaría el mismo id generado durante la reserva del Vuelo para usarlo como mismo identificador para la reserva del Hotel y del Coche. Tienes que encontrar el mecanismo para que unos micros se comuniquen con los otros y terminar el proceso, esta es la parte fácil.
+### REQ3.A: Booking process
+The idea is that a user that wants to do a trip, can previously make the reservation of a Flight, a Hotel and a Car, in that order, so as clue, it would be good to use the same generated ID during the reservation of the Flight to use it as same identifier for the reservation of the Hotel and the Car. You have to find the mechanism so that some microservices communicate with others to end the process.
 
 ### REQ3.B: Error management
-El siguiente paso, sería ver qué pasaría si algunos de tus micros ha tenido algún problema, por base de datos o por lo que sea, que lo simularías no levantando el microservicio, qué solución darías, usarías el circuit breaker, etc...
+The next step, would be to check what would happen if any of those micros have any problem, due to database or other, that could be simulated for example without starting up one of the microservices, what solution you would provide, if you would use Circuit Breaker, etc.
 
 ### REQ4: Saga management
-La idea es montar un cuarto microservicio, Payment, que gestione el pago de los tres servicios anteriores, de tal forma que si se ha conseguido reserva de Vuelo, Hotel y Coche, se puede proceder con el pago, y el proceso ha terminado correctamente, si le falta alguna reserva de los anteriores, se le comunica en el endpoint el problema (con la estructura de error que me has comentado antes), pero no solo eso, hay que echar para atrás las reservas anteriores, por lo que otro campo que necesitarás en los objetos de dominio de los tres microservicios Vuelo, Hotel y Coche será el estado (hazlo con una Enum de Java), que tenga algo así como los valores: IN_PROGRESS, RESERVED, PAID, CANCELLED (más o menos, lo que veas que vayas a necesitar), para que luego podamos ver que tu Saga se comporta correctamente.
-Por ejemplo, si se realiza la reserva del vuelo y del hotel, pero falla la del coche, no se podrá realizar el pago, y se han de cancelar luego las reservas del vuelo y el hotel.
-Otro caso sería que se reserve todo correctamente, pero el propio servicio de Payment detecte que el cliente no tiene saldo en la tarjeta y no pueda pagar, por lo que se tendrían que cambiar el estado de las reserva a CANCELLED, pero estas operaciones no las hace el micro de pagos, las tienen que hacer cada uno de los otros microservicios, así que tendrás que usar llamadas desde el de pagos a los otros para que cada uno cancele su reserva. El caso de que falle el pago hazlo con alguna función aleatoria, por ejemplo, que el 50% de los pagos fallen. En los servicios para las reservas, podrás hacer lo mismo, que el 10% de las operaciones fallen, para que de vez en cuando entren en funcionamiento tus Sagas.
-Hay frameworks específicos para gestionar Sagas, como Axon, pero de momento esto es algo más avanzado, así que la idea es que te lo montes a mano de la forma más sencilla que puedas. Básicamente tienes dos formas de hacerlo, por Coreografía o por Orquestación pero en tu caso, la opción más fácil será la Coreografía, y así no necesitarás microservicios extras.
+The idea is to create a fourth microservice, Payment, that manages the payment of the tree previous microsrevices, so that if the reservation of the Flight, Hotel and Car was achieved, the payment can be done, and the process end successfully. If any of the reservations are missing, it is communicated to the corresponding endpoint (with the generic response data structure); but not only that, we have to roll back the reservations so another needed field on the domain objects will be the status (done with a Java Enum) that can have the values: IN_PROGRESS, PAID, CANCELLED (more or less, what it is needed) so that we can then see how the Saga behaves. For example, if a reservation is done for flight and hotel, but car's one fails, then the payment should not be completed and the reservations should be cancelled. Another case would be that all the reservations work well, but the own service of Payment dtects that the client does not have enough credit, so all the reservations should go to status CANCELLED, but this operations are not performed by the Payment microservice, each one has do change their own status. To simulate that the payment had failed, do it with a random function, for example, that the 50% of payments fail. There are specific frameworks to manage Sagas, like Axon, but for now lets do it manually in the simplest way possible. Basically there are two ways of doing them, by Coreography or Orchestration but for this exercice, lets use Coreography so no extra microservices are needed.
 
 ### REQ5: Gateway
-Estaría bien tener un API Gateway
+Would be a nice to have an API Gateway
 
 ### REQ6: Clean code
-Yo le doy mucho valor al "clean code" y ha una buena elección de los nombres de las variables y los métodos, deberían ser auto-descriptivas, se tiene que entender todo muy bien sin necesidad de añadir anotaciones de tipo javadoc.
+A must is having a clean code, with a correct variable and method naming where they are auto-descriptive without need of extra javadocs.
 
 ### REQ7: Swagger OpenAPI
-La única documentación que tienes que proporcionar es en los endpoints, todo lo que añadas se tiene que ver en swagger, el resto no es necesario. Leyendo tu API tengo que saber como ser capaz de realizar el proceso completo.
+The only documentation to provide is the description of endpoints in form of Swagger following the OpenAPI standard. Reading the API documentation should be enough to know the API.
+
+### REQ7: Message Brokers
+The microservices consumer and produces must be abstract from client. For that, use Spring Cloud Stream to abstract the connection to Kafka or RabbitMQ brokers.
+
+### REQ8: Docker and Installation documentation
+In order for the project to be standardized for easy deployment, we include a docker-compose file to create all the docker needed, and we complete this README.md file with all the installation process and steps need to test the project.
 
 ## Project exclusions
 ### EXC1: No frontend
-Sólo haz la parte de back, no necesitamos ningún front, las pruebas las haremos con Postman.
-
-
-# Connections
-## Connect to Kafka topics
-To connect to Kafka topics, once Docker engine is up:
-- Ensure that containers kafka1 and zoo1 are up, or make them up by: docker up kafka1 / zoo1.
-- Use command: "$ docker exec -it kafka1 bash" -> To enter the container shell
-- Use: "$ kafka-console-consumer --bootstrap-server localhost:9092 --topic topic_name --from-beginning" -> to read messages.
-
-Delete topic:
-- First list current available topics: "$ kafka-topics --list --bootstrap-server localhost:9092"
-- Delete one of the topics: "$ kafka-topics --bootstrap-server localhost:9092 --delete --topic <topic-name>"
-
-Manually create a topic:
-- Create one new topic: "$ kafka-topics --bootstrap-server localhost:9092 --topic <topic-name> --create --partitions 3 --replication-factor 1"
+No front-end development is needed. The focus in this case is backend and endpoint testing is done throw IntelliJ HTTP Client.
 
 # Architecture Diagram
 ![Architecture diagram of the solution](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-architecture.jpg)

@@ -22,14 +22,14 @@ public class HotelReservationConsumer {
     @Bean
     Consumer<Message<ReservationDto>> inputHotel() {
         return message -> {
-            LOGGER.info("Headers: {}", message.getHeaders());
-            LOGGER.info("Headers.Id: {}", message.getHeaders().getId());
-            LOGGER.info("ReservationDto: {}", message.getPayload());
-            LOGGER.info("message.getPayload().getId(): " + message.getPayload().getId());
-            LOGGER.info("message.getPayload().getStatus(): " + message.getPayload().getStatus());
-            LOGGER.info("message.getPayload().getStartDate(): " + message.getPayload().getStartDate());
-            LOGGER.info("message.getPayload().getEndDate(): " + message.getPayload().getEndDate());
-            LOGGER.info("message.getPayload().getCar().getId(): " + message.getPayload().getRoom().getId());
+            LOGGER.info("{} - Headers: {}", this.getClass().getName(), message.getHeaders());
+            LOGGER.info("{} - Headers.Id: {}", this.getClass().getName(), message.getHeaders().getId());
+            LOGGER.info("{} - ReservationDto: {}", this.getClass().getName(), message.getPayload());
+            LOGGER.info("{} - message.getPayload().getId(): {}", this.getClass().getName(), message.getPayload().getId());
+            LOGGER.info("{} - message.getPayload().getStatus(): {}", this.getClass().getName(), message.getPayload().getStatus());
+            LOGGER.info("{} - message.getPayload().getStartDate(): {}", this.getClass().getName(), message.getPayload().getStartDate());
+            LOGGER.info("{} - message.getPayload().getEndDate(): {}", this.getClass().getName(), message.getPayload().getEndDate());
+            LOGGER.info("{} - message.getPayload().getCar().getId(): {}", this.getClass().getName(), message.getPayload().getRoom().getId());
             paymentService.addReservation(message.getPayload().getId(), ReservationType.HOTEL);
         };
     }
