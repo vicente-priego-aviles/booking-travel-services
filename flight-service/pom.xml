@@ -8,7 +8,7 @@
 		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.mercedes-benz</groupId>
+	<groupId>com.company</groupId>
 	<artifactId>flight-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>flight-service</name>
@@ -42,7 +42,7 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.mercedes-benz</groupId>
+			<groupId>com.company</groupId>
 			<artifactId>base-domains</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

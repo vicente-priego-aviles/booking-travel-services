@@ -41,6 +41,8 @@ To test the project, we have added some IntelliJ HTTP Client files. You can find
 * <b>01-insert-all-and-book-all</b>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (without status print)
 * <b>02-insert-all-and-book-all-with-status-trace</b> <i>(Recommended)</i>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (with status print: saving the Payment status after each reservation).
 
+<b>IMPORTANT</b>: Remember that is needed to select as "Environment" the "dev" value. The environments for the HTTP Client are configured on the http-client.env.json file.
+
 ### Access Databases
 To access the databases, we have enabled the h2-console web client on each of the projects. For that, we have cleared the access on each of the IPs directly to the microservice. So with the following URLs you can access the h2 client:
 

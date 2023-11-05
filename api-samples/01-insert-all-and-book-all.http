@@ -162,7 +162,7 @@ if (response.status === 201 && response.body.data != undefined ) {
 POST {{hostname}}/flight-service/api/flights-booking/book/{{flight_id}}
 
 > {%
-if (response.status === 200 && response.body.data != undefined ) {
+if (response.status === 201 && response.body.data != undefined ) {
     client.global.set("reservation_id", response.body.data.id);
 }
  %}
@@ -182,8 +182,8 @@ POST {{hostname}}/car-service/api/cars-booking/book/{{car_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1694772000000,
-  "endDate": 1694937600000,
+  "startDate": 1673308800000,
+  "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }
 

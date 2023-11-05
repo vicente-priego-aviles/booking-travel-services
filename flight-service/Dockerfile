@@ -1,6 +1,6 @@
 FROM eclipse-temurin:17
 
-LABEL manteiner="pablo.sanchez_bello@mercedes-benz.com"
+LABEL manteiner="pablo.sanchez_bello@company.com"
 
 WORKDIR /app
 
