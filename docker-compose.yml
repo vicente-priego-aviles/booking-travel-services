@@ -43,9 +43,12 @@ services:
     networks:
       - booking-travel-net
     restart: on-failure
-    depends_on:
-      - rabbitmq
-  #  config-server:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+#  config-server:
 #    container_name: config-server
 #    build:
 #      context: ./config-server/
@@ -66,7 +69,13 @@ services:
       - booking-travel-net
     restart: on-failure
     depends_on:
-      - service-registry
+      service-registry:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9191/actuator/health" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
   flight-service:
     container_name: flight-service
     env_file:
@@ -80,7 +89,8 @@ services:
       - booking-travel-net
     restart: no
     depends_on:
-      - api-gateway
+      api-gateway:
+        condition: service_healthy
   hotel-service:
     container_name: hotel-service
     env_file:
@@ -94,7 +104,8 @@ services:
       - booking-travel-net
     restart: no
     depends_on:
-      - api-gateway
+      api-gateway:
+        condition: service_healthy
   car-service:
     container_name: car-service
     env_file:
@@ -108,7 +119,8 @@ services:
       - booking-travel-net
     restart: no
     depends_on:
-      - api-gateway
+      api-gateway:
+        condition: service_healthy
   payment-service:
     container_name: payment-service
     env_file:
@@ -122,6 +134,7 @@ services:
       - booking-travel-net
     restart: no
     depends_on:
-      - api-gateway
+      api-gateway:
+        condition: service_healthy
 networks:
   booking-travel-net: {}

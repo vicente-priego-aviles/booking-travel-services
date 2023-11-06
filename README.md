@@ -1,5 +1,10 @@
 # booking-travel-services
-Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. In addition, a fourth microservice Payments is develop to show Saga management, consuming/producing message throw Kafka/RabbitMQ in an abstract way.
+Booking travel services project. A Java based 3 microservices for 3 different elements bookable: flights, hotel and rental cars. In addition, a fourth microservice Payments is develop to show Saga management, consuming/producing message throw Kafka/RabbitMQ in an abstract way and more:
+- REST APIs
+- Direct connection between microservices using Feign clients.
+- Circuit Breaker and Retry patterns
+- Dockers
+- Message Brokers: RabbitMQ and Kafka
 
 ## Installation
 
@@ -15,6 +20,16 @@ After this, we can start running the containers. To see the different logs, the 
 ### Starting the project
 We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
 <pre>$ docker start rabbitmq</pre>
+<br/>
+
+#### Authomatic startup of dockers ⚙️
+We have included the possibility of starting the dockers with only one command. The precondition is to have started the message broker (either RabbitMQ or Kafka) and then run the following command.
+<pre>$ docker compose up service-registry api-gateway flight-service hotel-service car-service payment-service</pre>
+With this, with the defined docker-compose dependencies, all the microservice will start. In case you want a detached startup, use the option "-d" to detach the terminal. You will then be able to access the logs using:
+<pre>$ docker logs -f docker_name</pre>
+<br />
+
+#### Manual startup of dockers 👨‍🔧
 Now, we start the Service Registry microservice, so that the following microservices can register in the Eureka Server hold in that docker:
 <pre>$ docker start service-registry -a</pre>
 <b>ONLY</b> when we see in the logs the project ended, we start the API Gateway that will be the front door for all the client HTTP requests:
@@ -25,8 +40,9 @@ Now, we start the Service Registry microservice, so that the following microserv
 <pre>$ docker start hotel-service -a</pre>
 <pre>$ docker start payment-service -a</pre>
 With this, installation is finished. To see how to use IntelliJ HTTP Client plugin and testing instructions, go to "Testing the project" section.
+<br /><br />
 
-### Using Kafka
+#### Using Kafka
 With the project it is provided a .env file. This file contains one variable set by default to 'rabbit' as following:
 <pre>MESSAGE_BROKER=rabbit</pre>
 In case of wanting to use Kafka, you should change it to value 'kafka' to leave it as following:
@@ -39,9 +55,9 @@ Now, go back to section "Starting the project".
 To test the project, we have added some IntelliJ HTTP Client files. You can find them under the "api-samples" folder. Inside the "playground" folder you can find the individual HTTP calls for each of the microservices. Directly on the "api-samples" folder you will find 3 .http files that authomatically perform reservations:
 * <b>00-insert-all-and-book-only-flight.http</b>: Inserts data for Flights, Hotels and Cars and runs the first reservation for a Flight.
 * <b>01-insert-all-and-book-all</b>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (without status print)
-* <b>02-insert-all-and-book-all-with-status-trace</b> <i>(Recommended)</i>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (with status print: saving the Payment status after each reservation).
+* <b>02-insert-all-and-book-all-with-status-trace</b> 👍<i>(Recommended)</i>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (with status print: saving the Payment status after each reservation).
 
-<b>IMPORTANT</b>: Remember that is needed to select as "Environment" the "dev" value. The environments for the HTTP Client are configured on the http-client.env.json file.
+<b>❗⚠️IMPORTANT</b>: Remember that is needed to select as "Environment" the "dev" value. The environments for the HTTP Client are configured on the http-client.env.json file.
 
 ### Access Databases
 To access the databases, we have enabled the h2-console web client on each of the projects. For that, we have cleared the access on each of the IPs directly to the microservice. So with the following URLs you can access the h2 client:
@@ -85,7 +101,7 @@ $ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name
 ### Access Swagger
 To access the Swagger files, you can use the following URLs. We recommend accessing the Flight Service Swagger files, as we have included some response Examples only on that microservice for time saving purposes.
 <pre>
-# Flight Service (Recommended)
+# Flight Service 👍(Recommended)
 http://localhost:8081/swagger-ui
 # Hotel Service
 http://localhost:8082/swagger-ui
@@ -94,6 +110,24 @@ http://localhost:8083/swagger-ui
 # Payment Service
 http://localhost:8084/swagger-ui
 </pre>
+
+### Last minute useful commands
+In case something went wrong and it is needed to recreate things, find here several useful commands:
+<pre>
+# List running containers
+$ docker ps -a
+# Stop a docker
+$ docker stop docker_name
+# Remove a container
+$ docker rm docker_name
+# List docker images
+$ docker image ls
+# Remove a docker image
+$ docker image rm docker_image_name
+</pre>
+
+# Architecture Diagram
+![Architecture diagram of the solution](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-architecture.jpg)
 
 ## Project requirements
 ### REQ1: Microservices to build
@@ -129,6 +163,3 @@ In order for the project to be standardized for easy deployment, we include a do
 ## Project exclusions
 ### EXC1: No frontend
 No front-end development is needed. The focus in this case is backend and endpoint testing is done throw IntelliJ HTTP Client.
-
-# Architecture Diagram
-![Architecture diagram of the solution](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-architecture.jpg)
