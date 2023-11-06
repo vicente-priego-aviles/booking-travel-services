@@ -1,0 +1,5 @@
+### Pay a reservation
+POST {{hostname}}/payment-service/api/payments/b395a8d8-83d7-4c8d-a675-430a2db67793
+
+### Get All RESERVATIONS
+GET {{hostname}}/payment-service/api/payments

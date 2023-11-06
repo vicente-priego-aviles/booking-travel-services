@@ -1,0 +1,137 @@
+### Insert Collection of Cars
+POST {{hostname}}/car-service/api/cars-booking
+Content-Type: application/json
+
+[{
+  "brand": "Mercedes-Benz",
+  "model": "Class A",
+  "license": "AAA-0000",
+  "costPerDay": 89.50,
+  "availabilities": [{
+    "startDate": 1693519200000,
+    "endDate": 1693864800000
+  },{
+    "startDate": 1694296800000,
+    "endDate": 1695420000000
+  }]
+},
+  {
+    "brand": "Mercedes-Benz AMG",
+    "model": "Class EQE",
+    "license": "EQE-0000",
+    "costPerDay": 236.00,
+    "availabilities": [{
+      "startDate": 1695074400000,
+      "endDate": 1695506400000
+    }]
+  },
+  {
+    "brand": "Mercedes-Benz AMG",
+    "model": "Class EQS",
+    "license": "SQE-0000",
+    "costPerDay": 298.47,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  }]
+
+### Insert Collection of HOTELS
+POST {{hostname}}/hotel-service/api/hotels-booking
+Content-Type: application/json
+
+[{
+  "name": "Grand Hotel",
+  "direction": "Calle Falsa 123, Torrevieja 03183 - Alicante",
+  "costPerNight": 6300,
+  "rooms": [{
+    "title": "Habitacion individual A",
+    "peopleCapacity": 1,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  },{
+    "title": "Habitacion doble B",
+    "peopleCapacity": 2,
+    "availabilities": [{
+      "startDate": 1694988000000,
+      "endDate": 1695592800000
+    }]
+  }]
+},
+  {
+    "name": "Little Hotel",
+    "direction": "Calle Fake 123, Torrevieja 03183 - Alicante",
+    "costPerNight": 4599,
+    "rooms": [{
+      "title": "Habitacion Gold",
+      "peopleCapacity": 2,
+      "availabilities": [{
+        "startDate": 1695160800000,
+        "endDate": 1695592800000
+      }]
+    },{
+      "title": "Habitacion Diamond",
+      "peopleCapacity": 4,
+      "availabilities": [{
+        "startDate": 1695420000000,
+        "endDate": 1695592800000
+      }]
+    }]
+  }]
+
+### Insert Collection of Flights
+POST {{hostname}}/flight-service/api/flights-booking
+Content-Type: application/json
+
+[{
+  "reference": "X-456",
+  "airline": "Iberia",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695024000000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695029400000,
+  "cost": 56790,
+  "remainingSeats": 5
+},
+  {
+  "reference": "G-222",
+  "airline": "Rayaner",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695013200000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695022200000,
+  "cost": 45990,
+  "remainingSeats": 5
+},
+  {
+  "reference": "G-111",
+  "airline": "Iberia",
+  "departureAirportCode": "MAD",
+  "departureAirportName": "Madrid Barajas",
+  "departureTime": 1695052800000,
+  "arrivalAirportCode": "TOR",
+  "arrivalAirportName": "Torrevieja",
+  "arrivalTime": 1695058200000,
+  "cost": 45990,
+  "remainingSeats": 5
+}]
+
+> {%
+if (response.status === 201 && response.body.data != undefined ) {
+    for (let i = 0; i < response.body.data.length; i++) {
+        if (response.body.data[i].reference == "X-456") {
+            client.global.set("flight_id", response.body.data[i].id);
+            break;
+        }
+    }
+}
+ %}
+
+### Book a FLIGHT
+POST {{hostname}}/flight-service/api/flights-booking/book/{{flight_id}}

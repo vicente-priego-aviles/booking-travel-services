@@ -1,0 +1,140 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.12.6-management
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - booking-travel-net
+  kafka:
+    image: 'bitnami/kafka:3.6.0'
+    container_name: 'kafka'
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+      - "29092:29092"
+      - "9999:9999"
+    networks:
+      - booking-travel-net
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+  service-registry:
+    container_name: service-registry
+    build:
+      context: ./service-registry/
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - booking-travel-net
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+#  config-server:
+#    container_name: config-server
+#    build:
+#      context: ./config-server/
+#      dockerfile: Dockerfile
+#    networks:
+#      - booking-travel-net
+#    restart: on-failure
+#    depends_on:
+#      - service-registry
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway/
+      dockerfile: Dockerfile
+    ports:
+      - "9191:9191"
+    networks:
+      - booking-travel-net
+    restart: on-failure
+    depends_on:
+      service-registry:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9191/actuator/health" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+  flight-service:
+    container_name: flight-service
+    env_file:
+      - .env
+    build:
+      context: ./flight-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - booking-travel-net
+    restart: no
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+  hotel-service:
+    container_name: hotel-service
+    env_file:
+      - .env
+    build:
+      context: ./hotel-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - booking-travel-net
+    restart: no
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+  car-service:
+    container_name: car-service
+    env_file:
+      - .env
+    build:
+      context: ./car-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    networks:
+      - booking-travel-net
+    restart: no
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+  payment-service:
+    container_name: payment-service
+    env_file:
+      - .env
+    build:
+      context: ./payment-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    networks:
+      - booking-travel-net
+    restart: no
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+networks:
+  booking-travel-net: {}
