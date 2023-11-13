@@ -12,10 +12,9 @@ Booking travel services project. A Java based 3 microservices for 3 different el
 By default, the project is configured to use RabbitMQ as message broker. In case you would like to use Kafka, go to section "Using Kafka".
 First of all, lets compile the maven project to create the artifacts.
 <pre>$ mvn clean package</pre>
-Now, we build and create all docker images.
+We have to wait until the previous command has finished. After that, we build and create all docker images (again remember to wait until the command has finished).
 <pre>$ docker compose create</pre>
-After this, we can start running the containers. To see the different logs, the recommended approach is to open a PowerShell window for each docker to start. We will use the "-a" parameter on the docker start to attach the terminal to the logs, so we can track the logs visually.
-<br><br>
+<br>
 
 ### Starting the project
 We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
@@ -24,13 +23,17 @@ We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
 
 #### Authomatic startup of dockers ⚙️
 We have included the possibility of starting the dockers with only one command. The precondition is to have started the message broker (either RabbitMQ or Kafka) and then run the following command.
-<pre>$ docker compose up service-registry api-gateway flight-service hotel-service car-service payment-service</pre>
-With this, with the defined docker-compose dependencies, all the microservice will start. In case you want a detached startup, use the option "-d" to detach the terminal. You will then be able to access the logs using:
+<pre>$ docker compose up service-registry api-gateway flight-service hotel-service car-service payment-service -d</pre>
+With this, with the defined docker-compose dependencies, all the microservice will start. 
+To monitor when all dockers are "healthy" refresh the following command to get the status:
+<pre>$ docker ps</pre>
+
+You can access the logs of a container using the following command, that will attach the terminal to "follow" the new logs:
 <pre>$ docker logs -f docker_name</pre>
 <br />
 
 #### Manual startup of dockers 👨‍🔧
-Now, we start the Service Registry microservice, so that the following microservices can register in the Eureka Server hold in that docker:
+Now, we start the Service Registry microservice (this microservice contains an Eureka Server for the auto discovery of endpoints using application names instead of IPs addresses):
 <pre>$ docker start service-registry -a</pre>
 <b>ONLY</b> when we see in the logs the project ended, we start the API Gateway that will be the front door for all the client HTTP requests:
 <pre>$ docker start api-gateway -a</pre>
@@ -102,13 +105,13 @@ $ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name
 To access the Swagger files, you can use the following URLs. We recommend accessing the Flight Service Swagger files, as we have included some response Examples only on that microservice for time saving purposes.
 <pre>
 # Flight Service 👍(Recommended)
-http://localhost:8081/swagger-ui
+http://localhost:8081/swagger-ui/index.html
 # Hotel Service
-http://localhost:8082/swagger-ui
+http://localhost:8082/swagger-ui/index.html
 # Car Service
-http://localhost:8083/swagger-ui
+http://localhost:8083/swagger-ui/index.html
 # Payment Service
-http://localhost:8084/swagger-ui
+http://localhost:8084/swagger-ui/index.html
 </pre>
 
 ### Last minute useful commands

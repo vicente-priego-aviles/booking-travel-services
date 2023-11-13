@@ -91,6 +91,11 @@ services:
     depends_on:
       api-gateway:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/api/flights-booking" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
   hotel-service:
     container_name: hotel-service
     env_file:
@@ -106,6 +111,11 @@ services:
     depends_on:
       api-gateway:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/api/hotels-booking" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
   car-service:
     container_name: car-service
     env_file:
@@ -121,6 +131,11 @@ services:
     depends_on:
       api-gateway:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/api/cars-booking" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
   payment-service:
     container_name: payment-service
     env_file:
@@ -136,5 +151,10 @@ services:
     depends_on:
       api-gateway:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/api/payments" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 networks:
   booking-travel-net: {}
