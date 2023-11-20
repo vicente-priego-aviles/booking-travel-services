@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,8 +51,17 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> insertAll(List<CarDto> cars) {
-        Iterable<Car> carsEntity = cars.stream().map((car) -> modelMapper.map(car, Car.class)).collect(Collectors.toSet());
-        List<Car> savedList = carRepository.saveAll(carsEntity);
+        List<Car> carsEntity = cars.stream().map((car) -> modelMapper.map(car, Car.class)).toList();
+        List<Car> savedList = new ArrayList<>();
+        carsEntity.forEach((car) -> {
+            List<Availability> availabilities = car.getAvailabilities();
+            car.setAvailabilities(null);
+            car = carRepository.saveAndFlush(car);
+            Car finalCar = car;
+            availabilities = availabilities.stream().peek((availability) -> availability.setCar(finalCar)).toList();
+            availabilityRepository.saveAllAndFlush(availabilities);
+            savedList.add(car);
+        });
         return savedList.stream().map((car) -> modelMapper.map(car, CarDto.class)).toList();
     }
 

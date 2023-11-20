@@ -27,9 +27,9 @@ public class PaymentReservationConsumer {
             LOGGER.info("ReservationDto: {}", message.getPayload());
             LOGGER.info("message.getPayload().getId(): " + message.getPayload().getId());
             LOGGER.info("message.getPayload().getStatus(): " + message.getPayload().getStatus());
-            LOGGER.info("message.getPayload().getCarBooked(): " + message.getPayload().getCarBooked());
-            LOGGER.info("message.getPayload().getFlightBooked(): " + message.getPayload().getFlightBooked());
-            LOGGER.info("message.getPayload().getHotelBooked(): " + message.getPayload().getHotelBooked());
+            LOGGER.info("message.getPayload().isCarBooked(): " + message.getPayload().isCarBooked());
+            LOGGER.info("message.getPayload().isFlightBooked(): " + message.getPayload().isFlightBooked());
+            LOGGER.info("message.getPayload().isHotelBooked(): " + message.getPayload().isHotelBooked());
             if (message.getPayload().getStatus() != null) {
                 if (message.getPayload().getStatus() == Status.CANCELLED) {
                     cancel(message.getPayload());

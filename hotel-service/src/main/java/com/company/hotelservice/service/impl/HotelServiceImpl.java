@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +53,25 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public List<HotelDto> insertAll(List<HotelDto> hotels) {
         List<Hotel> hotelsEntity = hotels.stream().map((hotel) -> modelMapper.map(hotel, Hotel.class)).toList();
-        List<Hotel> savedHotels = hotelRepository.saveAll(hotelsEntity);
+        List<Hotel> savedHotels = new ArrayList<>();
+        hotelsEntity.forEach((hotel) -> {
+            List<Room> rooms = hotel.getRooms();
+            hotel.setRooms(null);
+            hotel = hotelRepository.saveAndFlush(hotel);
+            Hotel finalHotel = hotel;
+            rooms = rooms.stream().peek((room) -> room.setHotel(finalHotel)).toList();
+            rooms.forEach((room) -> {
+                List<Availability> availabilities = room.getAvailabilities();
+                room.setAvailabilities(null);
+                room = roomRepository.saveAndFlush(room);
+                Room finalRoom = room;
+                availabilities = availabilities.stream().peek((availability) -> availability.setRoom(finalRoom)).toList();
+                availabilities = availabilityRepository.saveAllAndFlush(availabilities);
+                room.setAvailabilities(availabilities);
+            });
+            hotel.setRooms(rooms);
+            savedHotels.add(hotel);
+        });
         return savedHotels.stream().map((hotel) -> modelMapper.map(hotel, HotelDto.class)).toList();
     }
 
@@ -93,6 +112,11 @@ public class HotelServiceImpl implements HotelService {
         }
 
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("ROOM", "id", roomId.toString()));
+        LOGGER.debug("HotelServiceImpl.bookRoom - 1 : room.getId(): {}", room.getId());
+        LOGGER.debug("HotelServiceImpl.bookRoom - 4: room.getPeopleCapacity(): {}", room.getPeopleCapacity());
+        LOGGER.debug("HotelServiceImpl.bookRoom - 2: room.getAvailabilities(): {}", room.getAvailabilities());
+        LOGGER.debug("HotelServiceImpl.bookRoom - 3: room.getAvailabilities().size(): {}", room.getAvailabilities().size());
+        LOGGER.debug("HotelServiceImpl.bookRoom - 4: room.getHotel(): {}", room.getHotel());
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
         Availability availabilityBeforeReservation = bookingAvailabilityDto.getAvailabilityBeforeReservation();
         Availability availabilityAfterReservation = bookingAvailabilityDto.getAvailabilityAfterReservation();

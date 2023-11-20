@@ -42,13 +42,13 @@ public class PaymentServiceImpl implements PaymentService {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotBookableException("RESERVATION", "id", id.toString()));
         double probability = Math.random();
         LOGGER.debug("PaymentServiceImpl: payReservation: probability = {}", probability);
-        if (reservation.getFlightBooked() == null || !reservation.getFlightBooked()) {
+        if (!reservation.isFlightBooked()) {
             throw new PaymentException("FLIGHT", "id", reservation.getId().toString());
         }
-        if (reservation.getHotelBooked() == null || !reservation.getHotelBooked()) {
+        if (!reservation.isHotelBooked()) {
             throw new PaymentException("HOTEL", "id", reservation.getId().toString());
         }
-        if (reservation.getCarBooked() == null || !reservation.getCarBooked()) {
+        if (!reservation.isCarBooked()) {
             throw new PaymentException("CAR", "id", reservation.getId().toString());
         }
         if (reservation.getStatus() != Status.IN_PROGRESS) {

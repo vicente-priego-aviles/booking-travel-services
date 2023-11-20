@@ -24,8 +24,8 @@ We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
 #### Authomatic startup of dockers ⚙️
 We have included the possibility of starting the dockers with only one command. The precondition is to have started the message broker (either RabbitMQ or Kafka) and then run the following command.
 <pre>$ docker compose up service-registry api-gateway flight-service hotel-service car-service payment-service -d</pre>
-With this, with the defined docker-compose dependencies, all the microservice will start. 
-To monitor when all dockers are "healthy" refresh the following command to get the status:
+With the defined docker-compose dependencies, all the microservice will start in order. The previous command used the option "-d" to start dettached from the logs. 
+To monitor when all dockers are "healthy" refresh the following command to get the status (all our microservices would be ready whenever they are "healthy"):
 <pre>$ docker ps</pre>
 
 You can access the logs of a container using the following command, that will attach the terminal to "follow" the new logs:

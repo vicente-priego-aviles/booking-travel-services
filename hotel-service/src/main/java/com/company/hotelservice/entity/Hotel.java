@@ -21,7 +21,7 @@ public class Hotel {
     private String name;
     private String direction;
     private Long costPerNight;
-    @OneToMany (cascade = CascadeType.PERSIST)
+    @OneToMany (cascade = CascadeType.PERSIST, mappedBy = "hotel")
     private List<Room> rooms;
 
     @PrePersist
