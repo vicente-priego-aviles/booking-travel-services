@@ -54,7 +54,7 @@ POST {{hostname}}/hotel-service/api/hotels-booking/book/0f61d493-6b00-43c4-951c-
 Content-Type: application/json
 
 {
-  "startDate": 1673308800000,
+  "startDate": 1673352000000,
   "endDate": 1673776800000,
   "reservationID": "b395a8d8-83d7-4c8d-a675-430a2db67793"
 }

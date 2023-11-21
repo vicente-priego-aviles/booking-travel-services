@@ -24,8 +24,8 @@ We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
 #### Authomatic startup of dockers ⚙️
 We have included the possibility of starting the dockers with only one command. The precondition is to have started the message broker (either RabbitMQ or Kafka) and then run the following command.
 <pre>$ docker compose up service-registry api-gateway flight-service hotel-service car-service payment-service -d</pre>
-With this, with the defined docker-compose dependencies, all the microservice will start. 
-To monitor when all dockers are "healthy" refresh the following command to get the status:
+With the defined docker-compose dependencies, all the microservice will start in order. The previous command used the option "-d" to start dettached from the logs. 
+To monitor when all dockers are "healthy" refresh the following command to get the status (all our microservices would be ready whenever they are "healthy"):
 <pre>$ docker ps</pre>
 
 You can access the logs of a container using the following command, that will attach the terminal to "follow" the new logs:
@@ -133,6 +133,13 @@ $ docker image rm docker_image_name
 ![Architecture diagram of the solution](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-architecture.jpg)
 
 ## Project requirements
+
+### Data Model
+![Data Model diagram](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-domain-data.jpg)
+
+### Saga flow
+![Saga flow diagram](https://github.com/PabloSB96/booking-travel-services/blob/dev/booking-travel-services-saga-flow.gif)
+
 ### REQ1: Microservices to build
 One will be the Flight microservice, to do the reservation of a flight, another one will be the Hotel microservice, to the the reservation of a hostel to stay during the trip, and a third one will be the Car microservice to rent a car to move around the city. All of them will have a domain object with the same name with at least one ID (if you want you can have other properties, to also include Lombok, but it is not the main goal); and the ID would be suggested to use UUIDs, that are unique and then you can forget about BBDD sequences.
 

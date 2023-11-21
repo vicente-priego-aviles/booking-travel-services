@@ -27,7 +27,7 @@ public class Car {
 
     private Long costPerDay;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "car")
     private List<Availability> availabilities;
 
     @PrePersist

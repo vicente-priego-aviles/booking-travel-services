@@ -14,6 +14,6 @@ public class ValidReservationStartDateValidator implements ConstraintValidator<V
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(startDate);
 
-        return (time.get(Calendar.HOUR_OF_DAY) == 12 || time.get(Calendar.MINUTE) == 0);
+        return (time.get(Calendar.HOUR_OF_DAY) == 12 && time.get(Calendar.MINUTE) == 0);
     }
 }

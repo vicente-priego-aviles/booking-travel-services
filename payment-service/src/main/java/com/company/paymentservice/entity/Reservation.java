@@ -20,7 +20,7 @@ public class Reservation {
     private UUID id;
     @Enumerated(EnumType.STRING)
     private Status status;
-    private Boolean flightBooked;
-    private Boolean hotelBooked;
-    private Boolean carBooked;
+    private boolean flightBooked;
+    private boolean hotelBooked;
+    private boolean carBooked;
 }

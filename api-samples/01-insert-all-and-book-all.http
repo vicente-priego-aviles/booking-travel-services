@@ -172,7 +172,7 @@ POST {{hostname}}/hotel-service/api/hotels-booking/book/{{room_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1673308800000,
+  "startDate": 1673352000000,
   "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }
@@ -182,7 +182,7 @@ POST {{hostname}}/car-service/api/cars-booking/book/{{car_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1673308800000,
+  "startDate": 1673352000000,
   "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }

@@ -27,8 +27,38 @@ Content-Type: application/json
   },
   {
     "brand": "Mercedes-Benz AMG",
+    "model": "Class EQA",
+    "license": "AQE-0000",
+    "costPerDay": 298.47,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  },
+  {
+    "brand": "Mercedes-Benz AMG",
+    "model": "Class EQB",
+    "license": "BQE-0000",
+    "costPerDay": 298.47,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  },
+  {
+    "brand": "Mercedes-Benz AMG",
     "model": "Class EQS",
     "license": "SQE-0000",
+    "costPerDay": 298.47,
+    "availabilities": [{
+      "startDate": 1000000000000,
+      "endDate": 3000000000000
+    }]
+  },
+  {
+    "brand": "Mercedes-Benz AMG",
+    "model": "Class EQV",
+    "license": "VQE-0000",
     "costPerDay": 298.47,
     "availabilities": [{
       "startDate": 1000000000000,
@@ -39,9 +69,14 @@ Content-Type: application/json
 > {%
     if (response.status === 201 && response.body.data != undefined ) {
         for (let i = 0; i < response.body.data.length; i++) {
-            if (response.body.data[i].license == "SQE-0000") {
-                client.global.set("car_id", response.body.data[i].id);
-                break;
+            if (response.body.data[i].license == "AQE-0000") {
+                client.global.set("car_id_1", response.body.data[i].id);
+            } else if (response.body.data[i].license == "BQE-0000") {
+                client.global.set("car_id_2", response.body.data[i].id);
+            } else if (response.body.data[i].license == "SQE-0000") {
+                client.global.set("car_id_3", response.body.data[i].id);
+            } else if (response.body.data[i].license == "VQE-0000") {
+                client.global.set("car_id_4", response.body.data[i].id);
             }
         }
     }
@@ -52,18 +87,18 @@ POST {{hostname}}/hotel-service/api/hotels-booking
 Content-Type: application/json
 
 [{
-  "name": "Grand Hotel",
-  "direction": "Calle Falsa 123, Torrevieja 03183 - Alicante",
+  "name": "Grand Hotel Centro",
+  "direction": "Calle Falsa Centro 123, Torrevieja 03183 - Alicante",
   "costPerNight": 6300,
   "rooms": [{
-    "title": "Habitacion individual A",
+    "title": "Habitacion individual Centro A",
     "peopleCapacity": 1,
     "availabilities": [{
       "startDate": 1000000000000,
       "endDate": 3000000000000
     }]
   },{
-    "title": "Habitacion doble B",
+    "title": "Habitacion doble Centro B",
     "peopleCapacity": 2,
     "availabilities": [{
       "startDate": 1694988000000,
@@ -71,6 +106,45 @@ Content-Type: application/json
     }]
   }]
 },
+  {
+    "name": "Grand Hotel Norte",
+    "direction": "Calle Falsa Norte 123, Torrevieja 03183 - Alicante",
+    "costPerNight": 6300,
+    "rooms": [{
+      "title": "Habitacion individual Norte A",
+      "peopleCapacity": 1,
+      "availabilities": [{
+        "startDate": 1000000000000,
+        "endDate": 3000000000000
+      }]
+    }]
+  },
+  {
+    "name": "Grand Hotel Sur",
+    "direction": "Calle Falsa Sur 123, Torrevieja 03183 - Alicante",
+    "costPerNight": 6300,
+    "rooms": [{
+      "title": "Habitacion individual Sur A",
+      "peopleCapacity": 1,
+      "availabilities": [{
+        "startDate": 1000000000000,
+        "endDate": 3000000000000
+      }]
+    }]
+  },
+  {
+    "name": "Grand Hotel Este",
+    "direction": "Calle Falsa Este 123, Torrevieja 03183 - Alicante",
+    "costPerNight": 6300,
+    "rooms": [{
+      "title": "Habitacion individual Este A",
+      "peopleCapacity": 1,
+      "availabilities": [{
+        "startDate": 1000000000000,
+        "endDate": 3000000000000
+      }]
+    }]
+  },
   {
     "name": "Little Hotel",
     "direction": "Calle Fake 123, Torrevieja 03183 - Alicante",
@@ -94,10 +168,31 @@ Content-Type: application/json
 > {%
     if (response.status === 201 && response.body.data != undefined ) {
         for (let i = 0; i < response.body.data.length; i++) {
-            if (response.body.data[i].name == "Grand Hotel" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
+            if (response.body.data[i].name == "Grand Hotel Centro" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
                 for (let j = 0; j < response.body.data[i].rooms.length; j++) {
-                    if (response.body.data[i].rooms[j].title == "Habitacion individual A") {
-                        client.global.set("room_id", response.body.data[i].rooms[j].id);
+                    if (response.body.data[i].rooms[j].title == "Habitacion individual Centro A") {
+                        client.global.set("room_id_1", response.body.data[i].rooms[j].id);
+                        break;
+                    }
+                }
+            } else if (response.body.data[i].name == "Grand Hotel Norte" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
+                for (let j = 0; j < response.body.data[i].rooms.length; j++) {
+                    if (response.body.data[i].rooms[j].title == "Habitacion individual Norte A") {
+                        client.global.set("room_id_2", response.body.data[i].rooms[j].id);
+                        break;
+                    }
+                }
+            } else if (response.body.data[i].name == "Grand Hotel Sur" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
+                for (let j = 0; j < response.body.data[i].rooms.length; j++) {
+                    if (response.body.data[i].rooms[j].title == "Habitacion individual Sur A") {
+                        client.global.set("room_id_3", response.body.data[i].rooms[j].id);
+                        break;
+                    }
+                }
+            } else if (response.body.data[i].name == "Grand Hotel Este" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
+                for (let j = 0; j < response.body.data[i].rooms.length; j++) {
+                    if (response.body.data[i].rooms[j].title == "Habitacion individual Este A") {
+                        client.global.set("room_id_4", response.body.data[i].rooms[j].id);
                         break;
                     }
                 }
@@ -111,7 +206,7 @@ POST {{hostname}}/flight-service/api/flights-booking
 Content-Type: application/json
 
 [{
-  "reference": "X-456",
+  "reference": "G-000",
   "airline": "Iberia",
   "departureAirportCode": "MAD",
   "departureAirportName": "Madrid Barajas",
@@ -123,7 +218,7 @@ Content-Type: application/json
   "remainingSeats": 5
 },
   {
-  "reference": "G-222",
+  "reference": "G-111",
   "airline": "Rayaner",
   "departureAirportCode": "MAD",
   "departureAirportName": "Madrid Barajas",
@@ -135,7 +230,7 @@ Content-Type: application/json
   "remainingSeats": 5
 },
   {
-  "reference": "G-111",
+  "reference": "G-222",
   "airline": "Iberia",
   "departureAirportCode": "MAD",
   "departureAirportName": "Madrid Barajas",
@@ -145,20 +240,44 @@ Content-Type: application/json
   "arrivalTime": 1695058200000,
   "cost": 45990,
   "remainingSeats": 5
-}]
+},
+  {
+    "reference": "G-333",
+    "airline": "Iberia",
+    "departureAirportCode": "MAD",
+    "departureAirportName": "Madrid Barajas",
+    "departureTime": 1695052800000,
+    "arrivalAirportCode": "TOR",
+    "arrivalAirportName": "Torrevieja",
+    "arrivalTime": 1695058200000,
+    "cost": 45990,
+    "remainingSeats": 5
+  }]
 
 > {%
 if (response.status === 201 && response.body.data != undefined ) {
     for (let i = 0; i < response.body.data.length; i++) {
-        if (response.body.data[i].reference == "X-456") {
-            client.global.set("flight_id", response.body.data[i].id);
-            break;
+        if (response.body.data[i].reference == "G-000") {
+            client.global.set("flight_id_1", response.body.data[i].id);
+        } else if (response.body.data[i].reference == "G-111") {
+            client.global.set("flight_id_2", response.body.data[i].id);
+        } else if (response.body.data[i].reference == "G-222") {
+            client.global.set("flight_id_3", response.body.data[i].id);
+        } else if (response.body.data[i].reference == "G-333") {
+            client.global.set("flight_id_4", response.body.data[i].id);
         }
     }
 }
  %}
 
 ### Book a FLIGHT
+< {%
+// Configure run_cycle value with other values to repeat tests.
+// Values for run_cycle go from 1 to 4. Change it just changing the value and running again request starting from here to bottom (no need to insert values again).
+client.global.set("run_cycle", "1");
+
+client.global.set("flight_id", client.global.get("flight_id_" + client.global.get("run_cycle")));
+ %}
 POST {{hostname}}/flight-service/api/flights-booking/book/{{flight_id}}
 
 > {%
@@ -171,11 +290,14 @@ if (response.status === 201 && response.body.data != undefined ) {
 GET {{hostname}}/payment-service/api/payments
 
 ### Book a HOTEL
+< {%
+    client.global.set("room_id", client.global.get("room_id_" + client.global.get("run_cycle")));
+%}
 POST {{hostname}}/hotel-service/api/hotels-booking/book/{{room_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1673308800000,
+  "startDate": 1673352000000,
   "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }
@@ -184,11 +306,14 @@ Content-Type: application/json
 GET {{hostname}}/payment-service/api/payments
 
 ### Book a CAR
+< {%
+    client.global.set("car_id", client.global.get("car_id_" + client.global.get("run_cycle")));
+%}
 POST {{hostname}}/car-service/api/cars-booking/book/{{car_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1673308800000,
+  "startDate": 1673352000000,
   "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }
