@@ -57,10 +57,15 @@ Now, go back to section "Starting the project".
 ## Testing the project
 To test the project, we have added some IntelliJ HTTP Client files. You can find them under the "api-samples" folder. Inside the "playground" folder you can find the individual HTTP calls for each of the microservices. Directly on the "api-samples" folder you will find 3 .http files that authomatically perform reservations:
 * <b>00-insert-all-and-book-only-flight.http</b>: Inserts data for Flights, Hotels and Cars and runs the first reservation for a Flight.
-* <b>01-insert-all-and-book-all</b>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (without status print)
-* <b>02-insert-all-and-book-all-with-status-trace</b> 👍<i>(Recommended)</i>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (with status print: saving the Payment status after each reservation).
+* <b>01-insert-all-and-book-all.http</b>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (without status print)
+* <b>02-insert-all-and-book-all-with-status-trace.http</b> 👍<i><b>(Recommended)</b></i>: Inserts data for Flights, Hotels and Cars and books a Flight, Hotel and Car and tries Payment (with status print: saving the Payment status after each reservation).
+  * On this file, there is some configuration to keep in mind. After the first inserts, we save 4 flights, 4 rooms and 4 cars IDs on some global variables detecting them by a known field (in this case flight code, car license...). This are the flight_id_1, flight_id_2..., room_id_1, room_id_2... and car_id_1, car_id_2...
+  * When inserting the flight, before executing the HTTP request, the HTTP client executes a code first to establish a variable called "run_cycle". This is basically to be able to run up to 4 times the full process with "fresh" data. By default it is established to "1", and what we are doing is that then to pick the flight id, room id, car id that we want to book, we get the value of the variables called "flight_id_" + "run_cycle", "room_id_" + "run_cycle" and "car_id_" + "run_cycle".
+  * With this setup, if we execute run_cycle=1 and everything went by the path of payment PAID, we can change the value of "run_cycle" to "2" and execute again the booking of flight, hotel, car and pay to try getting payment CANCELLED.
 
 <b>❗⚠️IMPORTANT</b>: Remember that is needed to select as "Environment" the "dev" value. The environments for the HTTP Client are configured on the http-client.env.json file.
+
+<b>❗⚠️IMPORTANT</b>: When trying to execute the /pay endpoint, it has a 50% chance of resulting on Status PAID and 50% chance of resulting on Status CANCELLED. So DO NOT expect to always get the same result because it is a RANDOM function. This is why file 02-insert-all-and-book-all-with-status-trace.http includes the abstraction of "run_cycle" explained above.
 
 ### Access Databases
 To access the databases, we have enabled the h2-console web client on each of the projects. For that, we have cleared the access on each of the IPs directly to the microservice. So with the following URLs you can access the h2 client:
