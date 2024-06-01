@@ -1,9 +1,10 @@
 package com.company.carservice.helpers;
 
 import com.company.basedomains.dto.cars.CarReservationFiltersDto;
-import com.company.carservice.entity.Availability;
-import com.company.carservice.entity.Car;
-import com.company.carservice.helpers.dto.BookingAvailabilityDto;
+import com.company.carservice.h2.entity.Availability;
+import com.company.carservice.h2.entity.Car;
+import com.company.carservice.h2.helpers.BookingAvailabilityHelper;
+import com.company.carservice.h2.helpers.dto.BookingAvailabilityDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

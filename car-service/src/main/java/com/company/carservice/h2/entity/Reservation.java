@@ -1,4 +1,4 @@
-package com.company.carservice.entity;
+package com.company.carservice.h2.entity;
 
 import com.company.basedomains.dto.Status;
 import jakarta.persistence.*;
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.context.annotation.Profile;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table
+@Profile("h2")
 public class Reservation {
 
     @Id

@@ -1,4 +1,4 @@
-package com.company.carservice.service.impl;
+package com.company.carservice.neo4j.service.impl;
 
 import com.company.basedomains.dto.ResponseDto;
 import com.company.basedomains.dto.Status;
@@ -9,14 +9,14 @@ import com.company.basedomains.exception.BookingTravelException;
 import com.company.basedomains.exception.NotBookableException;
 import com.company.basedomains.exception.ResourceNotFoundException;
 import com.company.basedomains.exception.ServiceException;
-import com.company.carservice.helpers.BookingAvailabilityHelper;
-import com.company.carservice.helpers.dto.BookingAvailabilityDto;
-import com.company.carservice.entity.Availability;
-import com.company.carservice.entity.Car;
-import com.company.carservice.entity.Reservation;
-import com.company.carservice.repository.AvailabilityRepository;
-import com.company.carservice.repository.CarRepository;
-import com.company.carservice.repository.ReservationRepository;
+import com.company.carservice.neo4j.entity.Availability;
+import com.company.carservice.neo4j.entity.Car;
+import com.company.carservice.neo4j.entity.Reservation;
+import com.company.carservice.neo4j.repository.AvailabilityRepository;
+import com.company.carservice.neo4j.repository.ReservationRepository;
+import com.company.carservice.neo4j.helpers.BookingAvailabilityHelper;
+import com.company.carservice.neo4j.helpers.dto.BookingAvailabilityDto;
+import com.company.carservice.neo4j.repository.CarRepository;
 import com.company.carservice.service.APIClient;
 import com.company.carservice.service.CarService;
 import com.company.carservice.stream.ReservationProducer;
@@ -26,17 +26,18 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @AllArgsConstructor
+@Profile("neo4j")
 public class CarServiceImpl implements CarService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(CarServiceImpl.class);
@@ -56,10 +57,10 @@ public class CarServiceImpl implements CarService {
         carsEntity.forEach((car) -> {
             List<Availability> availabilities = car.getAvailabilities();
             car.setAvailabilities(null);
-            car = carRepository.saveAndFlush(car);
+            car = carRepository.save(car);
             Car finalCar = car;
             availabilities = availabilities.stream().peek((availability) -> availability.setCar(finalCar)).toList();
-            availabilityRepository.saveAllAndFlush(availabilities);
+            availabilityRepository.saveAll(availabilities);
             savedList.add(car);
         });
         return savedList.stream().map((car) -> modelMapper.map(car, CarDto.class)).toList();

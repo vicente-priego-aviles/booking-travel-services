@@ -1,0 +1,4 @@
+### Insert Collection of Cars
+POST {{hostname}}/car-service/api/cars-booking
+Content-Type: application/json
+

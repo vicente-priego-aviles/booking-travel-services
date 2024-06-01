@@ -25,3 +25,7 @@ replay_pid*
 
 # IntelliJ IDEA ignore configuration files directory
 .idea/*
+
+neo4j_db/
+
+my-db/

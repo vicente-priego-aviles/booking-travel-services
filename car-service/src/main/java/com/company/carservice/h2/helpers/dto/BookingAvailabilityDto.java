@@ -1,12 +1,14 @@
-package com.company.carservice.helpers.dto;
+package com.company.carservice.h2.helpers.dto;
 
-import com.company.carservice.entity.Availability;
+import com.company.carservice.h2.entity.Availability;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
+@Profile("h2")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
