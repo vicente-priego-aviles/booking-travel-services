@@ -28,8 +28,6 @@ public class CarBookingController {
 
     private CarService carService;
 
-    private ReservationProducer reservationProducerTest;
-
     @Operation(
             summary = "Insert a collection of Cars",
             description = "Insert a collection of cars with their availability"
@@ -67,7 +65,7 @@ public class CarBookingController {
             description = "HTTP Status 200 OK"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getCarById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDto> getCarById(@PathVariable String id) {
         ResponseDto response = new ResponseDto(null, carService.findOne(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -95,8 +93,14 @@ public class CarBookingController {
             description = "HTTP Status 201 CREATED"
     )
     @PostMapping("/book/{carId}")
-    public ResponseEntity<ResponseDto> bookCar(@PathVariable UUID carId, @RequestBody @Valid CarReservationFiltersDto carReservationFiltersDto) {
+    public ResponseEntity<ResponseDto> bookCar(@PathVariable String carId, @RequestBody @Valid CarReservationFiltersDto carReservationFiltersDto) {
         ResponseDto response = new ResponseDto(null, carService.bookCar(carId, carReservationFiltersDto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/book/cancel/{reservationId}")
+    public ResponseEntity<String> cancelReservation(@PathVariable String reservationId) {
+        carService.cancelReservation(reservationId);
+        return new ResponseEntity<>("Reservation cancelled", HttpStatus.OK);
     }
 }

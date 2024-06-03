@@ -46,7 +46,7 @@ public class PaymentController {
             description = "HTTP Status 200 OK"
     )
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseDto> pay(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDto> pay(@PathVariable String id) {
         ResponseDto response = new ResponseDto(null, paymentService.payReservation(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -1,6 +1,6 @@
-package com.company.flightservice.repository;
+package com.company.carservice.repository;
 
-import com.company.flightservice.entity.Reservation;
+import com.company.carservice.entity.Reservation;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 

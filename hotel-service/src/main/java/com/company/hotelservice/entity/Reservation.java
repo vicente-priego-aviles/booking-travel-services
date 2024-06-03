@@ -1,11 +1,11 @@
 package com.company.hotelservice.entity;
 
 import com.company.basedomains.dto.Status;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.*;
 
 import java.util.UUID;
 
@@ -13,22 +13,19 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table
+@Node(labels = {"HotelReservation"})
 public class Reservation {
     @Id
-    private UUID id;
-    @ManyToOne
-    private Room room;
-    private Long startDate;
-    private Long endDate;
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private String id;
 
-    @PrePersist
-    public void onCreate() {
-        if (id == null) {
-            id = UUID.randomUUID();
-        }
-    }
+    @Relationship(type = "BOOKED_ROOM", direction = Relationship.Direction.INCOMING)
+    private Room room;
+
+    @Property(name = "start_date")
+    private Long startDate;
+
+    @Property(name = "end_date")
+    private Long endDate;
+
+    private Status status;
 }

@@ -50,7 +50,7 @@ public class BookingAvailabilityHelperTest {
         roomReservationFiltersDto.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
         roomReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        roomReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
 
@@ -85,7 +85,7 @@ public class BookingAvailabilityHelperTest {
         roomReservationFiltersDto.setStartDate(1672916400000L); // 05/01/2023 12:00:00 CET
         roomReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        roomReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
 
@@ -137,7 +137,7 @@ public class BookingAvailabilityHelperTest {
         roomReservationFiltersDto.setStartDate(1673348400000L); // 10/01/2023 12:00:00 CET
         roomReservationFiltersDto.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        roomReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
 

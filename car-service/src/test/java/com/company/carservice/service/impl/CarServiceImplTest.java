@@ -3,15 +3,15 @@ package com.company.carservice.service.impl;
 import com.company.basedomains.dto.ResponseDto;
 import com.company.basedomains.dto.Status;
 import com.company.basedomains.dto.cars.CarReservationFiltersDto;
-import com.company.carservice.h2.entity.Availability;
-import com.company.carservice.h2.entity.Car;
-import com.company.carservice.h2.entity.Reservation;
-import com.company.carservice.h2.service.impl.CarServiceImpl;
-import com.company.carservice.h2.helpers.BookingAvailabilityHelper;
-import com.company.carservice.h2.helpers.dto.BookingAvailabilityDto;
-import com.company.carservice.h2.repository.AvailabilityRepository;
-import com.company.carservice.h2.repository.CarRepository;
-import com.company.carservice.h2.repository.ReservationRepository;
+import com.company.carservice.entity.Availability;
+import com.company.carservice.entity.Car;
+import com.company.carservice.entity.Reservation;
+import com.company.carservice.service.impl.CarServiceImpl;
+import com.company.carservice.helpers.BookingAvailabilityHelper;
+import com.company.carservice.helpers.dto.BookingAvailabilityDto;
+import com.company.carservice.repository.AvailabilityRepository;
+import com.company.carservice.repository.CarRepository;
+import com.company.carservice.repository.ReservationRepository;
 import com.company.carservice.service.APIClient;
 import com.company.carservice.stream.ReservationProducer;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,14 +89,14 @@ public class CarServiceImplTest {
         car.setAvailabilities(availabilities);
 
         reservation = new Reservation();
-        reservation.setId(UUID.randomUUID());
+        reservation.setId(UUID.randomUUID().toString());
         reservation.setCar(car);
         reservation.setStatus(Status.IN_PROGRESS);
         reservation.setStartDate(1672570800000L);
         reservation.setEndDate(1675155600000L);
 
         reservationToCancel = new Reservation();
-        reservationToCancel.setId(UUID.randomUUID());
+        reservationToCancel.setId(UUID.randomUUID().toString());
         reservationToCancel.setCar(car);
         reservationToCancel.setStatus(Status.IN_PROGRESS);
         reservationToCancel.setStartDate(1000000000000L);
@@ -109,7 +109,7 @@ public class CarServiceImplTest {
         carReservationFiltersDto.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
         carReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        carReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = new BookingAvailabilityDto();
         bookingAvailabilityDto.setAvailabilityBeforeReservation(null);
@@ -151,7 +151,7 @@ public class CarServiceImplTest {
         carReservationFiltersDto.setStartDate(1672916400000L); // 05/01/2023 12:00:00 CET
         carReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        carReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = new BookingAvailabilityDto();
         bookingAvailabilityDto.setAvailabilityBeforeReservation(new Availability(null, 1672570800000L, 1672909200000L, car));
@@ -193,7 +193,7 @@ public class CarServiceImplTest {
         carReservationFiltersDto.setStartDate(1673348400000L); // 10/01/2023 12:00:00 CET
         carReservationFiltersDto.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        carReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = new BookingAvailabilityDto();
         bookingAvailabilityDto.setAvailabilityBeforeReservation(new Availability(null, 1672570800000L, 1673341200000L, car));
@@ -234,7 +234,7 @@ public class CarServiceImplTest {
         when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservationToCancel));
         when(carRepository.findById(any())).thenReturn(Optional.ofNullable(car));
 
-        carService.cancelReservation(UUID.randomUUID());
+        carService.cancelReservation(UUID.randomUUID().toString());
 
         verify(availabilityRepository).save(availabilityArgumentCaptor.capture());
         verify(reservationRepository).save(reservationArgumentCaptor.capture());
@@ -256,7 +256,7 @@ public class CarServiceImplTest {
     void updateReservationStatus(Status status) {
         when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservation));
 
-        carService.updateReservationStatus(UUID.randomUUID(), status);
+        carService.updateReservationStatus(UUID.randomUUID().toString(), status);
 
         verify(reservationRepository).save(reservationArgumentCaptor.capture());
 

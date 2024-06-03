@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Data
 public class CarDto {
-    private UUID id;
+    private String id;
     @NotEmpty (message = "Brand is required")
     private String brand;
     @NotEmpty(message = "Model is required")

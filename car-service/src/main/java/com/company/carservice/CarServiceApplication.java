@@ -34,16 +34,13 @@ import org.springframework.kafka.annotation.EnableKafka;
 )
 @EnableFeignClients
 @EnableKafka
-@EnableNeo4jRepositories("com.company.carservice.neo4j")
-@EntityScan({"com.company.carservice.h2.entity", "com.company.carservice.neo4j.entity"})
+@EnableNeo4jRepositories("com.company.carservice")
+@EntityScan("com.company.carservice.entity")
 public class CarServiceApplication {
 	@Bean
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
 	}
-
-	@Bean
-	Configuration cypherDslConfiguration() { return Configuration.newConfig().withDialect(Dialect.NEO4J_5).build(); }
 
 	public static void main(String[] args) {
 		SpringApplication.run(CarServiceApplication.class, args);

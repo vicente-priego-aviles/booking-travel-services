@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Data
 public class ReservationDto {
-    private UUID id;
+    private String id;
     private RoomDto room;
     private Long startDate;
     private Long endDate;

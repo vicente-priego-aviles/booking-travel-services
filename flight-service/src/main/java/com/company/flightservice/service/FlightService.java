@@ -5,15 +5,14 @@ import com.company.basedomains.dto.flight.FlightDto;
 import com.company.basedomains.dto.flight.ReservationDto;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface FlightService {
     public List<FlightDto> insertAll(List<FlightDto> flights);
     public List<FlightDto> findAllAvailable();
-    public FlightDto findOne(UUID id);
+    public FlightDto findOne(String id);
     public List<ReservationDto> getAllBookings();
-    public ReservationDto bookFlight(UUID flightId);
-    public UUID checkReservation(UUID reservationID);
-    public void cancelReservation(UUID id);
-    public void updateReservationStatus(UUID id, Status status);
+    public ReservationDto bookFlight(String flightId);
+    public String checkReservation(String reservationID);
+    public void cancelReservation(String id);
+    public void updateReservationStatus(String id, Status status);
 }

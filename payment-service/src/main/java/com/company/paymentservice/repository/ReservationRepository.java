@@ -1,9 +1,9 @@
 package com.company.paymentservice.repository;
 
 import com.company.paymentservice.entity.Reservation;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
-public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
+@Repository
+public interface ReservationRepository extends Neo4jRepository<Reservation, String> {
 }

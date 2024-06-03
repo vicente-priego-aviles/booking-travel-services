@@ -1,10 +1,10 @@
-package com.company.carservice.neo4j.helpers;
+package com.company.carservice.helpers;
 
 import com.company.basedomains.dto.cars.CarReservationFiltersDto;
 import com.company.basedomains.exception.NotBookableException;
-import com.company.carservice.neo4j.entity.Availability;
-import com.company.carservice.neo4j.entity.Car;
-import com.company.carservice.neo4j.helpers.dto.BookingAvailabilityDto;
+import com.company.carservice.entity.Availability;
+import com.company.carservice.entity.Car;
+import com.company.carservice.helpers.dto.BookingAvailabilityDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-@Profile("neo4j")
 @Component
 public class BookingAvailabilityHelper {
     public BookingAvailabilityDto calculateAvailabilities(Car car, CarReservationFiltersDto carReservationFiltersDto) {
@@ -28,7 +27,7 @@ public class BookingAvailabilityHelper {
         dateNormalizator.set(dateNormalizator.get(Calendar.YEAR), dateNormalizator.get(Calendar.MONTH), dateNormalizator.get(Calendar.DAY_OF_MONTH), 10, 0, 0);
         carReservationFiltersDto.setEndDate(dateNormalizator.getTimeInMillis());
 
-        System.out.println("car.getId(): " + car.getId().toString());
+        System.out.println("car.getId(): " + car.getId());
         System.out.println("car.getBrand(): " + car.getBrand());
         System.out.println("car.getModel(): " + car.getModel());
         System.out.println("car.getLicense(): " + car.getLicense());
@@ -106,10 +105,10 @@ public class BookingAvailabilityHelper {
 
                 return bookingAvailabilityDto;
             } else {
-                throw new NotBookableException("CAR", "id", car.getId().toString());
+                throw new NotBookableException("CAR", "id", car.getId());
             }
         } else {
-            throw new NotBookableException("CAR", "id", car.getId().toString());
+            throw new NotBookableException("CAR", "id", car.getId());
         }
     }
 }

@@ -57,16 +57,16 @@ public class HotelServiceImpl implements HotelService {
         hotelsEntity.forEach((hotel) -> {
             List<Room> rooms = hotel.getRooms();
             hotel.setRooms(null);
-            hotel = hotelRepository.saveAndFlush(hotel);
+            hotel = hotelRepository.save(hotel);
             Hotel finalHotel = hotel;
             rooms = rooms.stream().peek((room) -> room.setHotel(finalHotel)).toList();
             rooms.forEach((room) -> {
                 List<Availability> availabilities = room.getAvailabilities();
                 room.setAvailabilities(null);
-                room = roomRepository.saveAndFlush(room);
+                room = roomRepository.save(room);
                 Room finalRoom = room;
                 availabilities = availabilities.stream().peek((availability) -> availability.setRoom(finalRoom)).toList();
-                availabilities = availabilityRepository.saveAllAndFlush(availabilities);
+                availabilities = availabilityRepository.saveAll(availabilities);
                 room.setAvailabilities(availabilities);
             });
             hotel.setRooms(rooms);
@@ -84,8 +84,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
-    public HotelDto findOne(UUID id) {
-        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("HOTEL", "id", id.toString()));
+    public HotelDto findOne(String id) {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("HOTEL", "id", id));
         return modelMapper.map(hotel, HotelDto.class);
     }
 
@@ -98,20 +98,20 @@ public class HotelServiceImpl implements HotelService {
 
     @Retry(name = "${spring.application.name}", fallbackMethod = "bookRoomCircuitBreakerFallback")
     @Override
-    public ReservationDto bookRoom(UUID roomId, RoomReservationFiltersDto roomReservationFiltersDto) {
+    public ReservationDto bookRoom(String roomId, RoomReservationFiltersDto roomReservationFiltersDto) {
         LOGGER.debug("HotelServiceImpl.bookRoom: trying to use FLIGHT-SERVICE API");
         ResponseDto reservationResponse = apiClient.bookCheckReservationID(roomReservationFiltersDto.getReservationID());
         LOGGER.debug("HotelServiceImpl.bookRoom: ended call to FLIGHT-SERVICE API");
 
-        UUID reservationID = null;
+        String reservationID = null;
         if (reservationResponse != null && reservationResponse.getData() != null) {
-            reservationID = UUID.fromString(reservationResponse.getData().toString());
+            reservationID = reservationResponse.getData().toString();
         }
         if (reservationID == null) {
-            throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID().toString());
+            throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID());
         }
 
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("ROOM", "id", roomId.toString()));
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("ROOM", "id", roomId));
         LOGGER.debug("HotelServiceImpl.bookRoom - 1 : room.getId(): {}", room.getId());
         LOGGER.debug("HotelServiceImpl.bookRoom - 4: room.getPeopleCapacity(): {}", room.getPeopleCapacity());
         LOGGER.debug("HotelServiceImpl.bookRoom - 2: room.getAvailabilities(): {}", room.getAvailabilities());
@@ -149,13 +149,13 @@ public class HotelServiceImpl implements HotelService {
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    public ReservationDto bookRoomCircuitBreakerFallback(UUID roomId, RoomReservationFiltersDto roomReservationFiltersDto, Throwable exception) throws Throwable {
+    public ReservationDto bookRoomCircuitBreakerFallback(String roomId, RoomReservationFiltersDto roomReservationFiltersDto, Throwable exception) throws Throwable {
         LOGGER.error("Exception handled by HotelServiceImpl.bookRoomCircuitBreakerFallback", exception);
         throw (exception instanceof BookingTravelException) ? exception : new ServiceException("FLIGHT-SERVICE");
     }
 
-    @Override
-    public void cancelReservation(UUID id) {
+    @Transactional
+    Availability createAvailability(String id) {
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation != null) {
             Room room = roomRepository.findById(reservation.getRoom().getId()).orElse(null);
@@ -165,10 +165,23 @@ public class HotelServiceImpl implements HotelService {
                 availability.setEndDate(reservation.getEndDate());
                 availability.setRoom(room);
                 availability = availabilityRepository.save(availability);
-                List<Availability> availabilities = room.getAvailabilities();
-                availabilities.add(availability);
-                room.setAvailabilities(availabilities);
+
+                return availability;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void cancelReservation(String id) {
+        Availability availability = createAvailability(id);
+        Reservation reservation = reservationRepository.findById(id).orElse(null);
+        if (reservation != null) {
+            Room room = roomRepository.findById(reservation.getRoom().getId()).orElse(null);
+            if (room != null) {
+                room.getAvailabilities().add(availability);
                 roomRepository.save(room);
+
                 reservation.setStatus(Status.CANCELLED);
                 reservationRepository.save(reservation);
             } else {
@@ -180,7 +193,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public void updateReservationStatus(UUID id, Status status) {
+    public void updateReservationStatus(String id, Status status) {
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation != null) {
             reservation.setStatus(status);

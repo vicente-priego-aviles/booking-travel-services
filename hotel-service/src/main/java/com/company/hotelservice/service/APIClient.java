@@ -10,5 +10,5 @@ import java.util.UUID;
 @FeignClient(name = "FLIGHT-SERVICE")
 public interface APIClient {
     @GetMapping("api/flights-booking/book/check/{reservation-id}")
-    ResponseDto bookCheckReservationID(@PathVariable("reservation-id")UUID reservationID);
+    ResponseDto bookCheckReservationID(@PathVariable("reservation-id")String reservationID);
 }

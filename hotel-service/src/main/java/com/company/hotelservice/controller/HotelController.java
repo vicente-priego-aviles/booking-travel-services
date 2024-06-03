@@ -63,7 +63,7 @@ public class HotelController {
             description = "HTTP Status 200 OK"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getHotelById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDto> getHotelById(@PathVariable String id) {
         ResponseDto response = new ResponseDto(null, hotelService.findOne(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -91,7 +91,7 @@ public class HotelController {
             description = "HTTP Status 201 CREATED"
     )
     @PostMapping("/book/{roomId}")
-    public ResponseEntity<ResponseDto> bookRoom(@PathVariable UUID roomId, @RequestBody @Valid RoomReservationFiltersDto roomReservationFiltersDto) {
+    public ResponseEntity<ResponseDto> bookRoom(@PathVariable String roomId, @RequestBody @Valid RoomReservationFiltersDto roomReservationFiltersDto) {
         ResponseDto response = new ResponseDto(null, hotelService.bookRoom(roomId, roomReservationFiltersDto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

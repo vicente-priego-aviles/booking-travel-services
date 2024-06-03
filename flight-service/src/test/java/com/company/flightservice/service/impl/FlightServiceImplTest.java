@@ -55,14 +55,14 @@ public class FlightServiceImplTest {
     @BeforeEach
     void setUp() {
         flight = new Flight();
-        flight.setId(UUID.randomUUID());
+        flight.setId(UUID.randomUUID().toString());
         flight.setAirline("Lufthansa");
         flight.setRemainingSeats(0L);
         flight.setCost(99L);
         flight.setReference("LU-0000");
 
         reservation = new Reservation();
-        reservation.setId(UUID.randomUUID());
+        reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus(Status.IN_PROGRESS);
         reservation.setFlight(flight);
     }
@@ -95,7 +95,7 @@ public class FlightServiceImplTest {
         UUID id = UUID.randomUUID();
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
 
-            flightService.checkReservation(id);
+            flightService.checkReservation(id.toString());
         });
         assertEquals("RESERVATION not found with id : " + id.toString(), exception.getMessage(), "A ResourceNotFoundException expected, but was not gotten.");
     }
@@ -104,7 +104,7 @@ public class FlightServiceImplTest {
     void cancelReservation() {
         when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservation));
 
-        flightService.cancelReservation(UUID.randomUUID());
+        flightService.cancelReservation(UUID.randomUUID().toString());
 
         verify(flightRepository).save(argumentCaptorFlight.capture());
         verify(reservationRepository).save(argumentCaptorReservation.capture());
@@ -124,7 +124,7 @@ public class FlightServiceImplTest {
     void updateReservationStatus(Status status) {
         when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservation));
 
-        flightService.updateReservationStatus(UUID.randomUUID(), status);
+        flightService.updateReservationStatus(UUID.randomUUID().toString(), status);
 
         verify(reservationRepository).save(argumentCaptorReservation.capture());
 

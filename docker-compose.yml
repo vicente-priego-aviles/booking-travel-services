@@ -1,21 +1,5 @@
 
 services:
-  mysql:
-    image: mysql/mysql-server:8.0.32
-    container_name: 'mysql'
-    ports:
-      - "3306:3306"
-      - "33060:33060"
-      - "33061:33061"
-    networks:
-      - booking-travel-net
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_USER_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - ./my-db:/var/lib/mysql
   neo4j:
     image: neo4j:5.19.0-ubi9
     container_name: 'neo4j'

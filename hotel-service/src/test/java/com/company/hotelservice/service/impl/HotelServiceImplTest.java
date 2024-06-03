@@ -100,14 +100,14 @@ public class HotelServiceImplTest {
         hotels.add(hotel);
 
         reservation = new Reservation();
-        reservation.setId(UUID.randomUUID());
+        reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus(Status.IN_PROGRESS);
         reservation.setStartDate(1700000000000L);
         reservation.setEndDate(1750000000000L);
         reservation.setRoom(room);
 
         reservationToCancel = new Reservation();
-        reservationToCancel.setId(UUID.randomUUID());
+        reservationToCancel.setId(UUID.randomUUID().toString());
         reservationToCancel.setRoom(room);
         reservationToCancel.setStatus(Status.IN_PROGRESS);
         reservationToCancel.setStartDate(1000000000000L);
@@ -120,7 +120,7 @@ public class HotelServiceImplTest {
         roomReservationFiltersDto.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
         roomReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        roomReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = new BookingAvailabilityDto();
         bookingAvailabilityDto.setAvailabilityBeforeReservation(null);
@@ -162,7 +162,7 @@ public class HotelServiceImplTest {
         roomReservationFiltersDto.setStartDate(1672916400000L); // 05/01/2023 12:00:00 CET
         roomReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        roomReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = new BookingAvailabilityDto();
         bookingAvailabilityDto.setAvailabilityBeforeReservation(new Availability(null, 1672570800000L, 1672909200000L, room));
@@ -204,7 +204,7 @@ public class HotelServiceImplTest {
         roomReservationFiltersDto.setStartDate(1673348400000L); // 10/01/2023 12:00:00 CET
         roomReservationFiltersDto.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        roomReservationFiltersDto.setReservationID(id);
+        roomReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = new BookingAvailabilityDto();
         bookingAvailabilityDto.setAvailabilityBeforeReservation(new Availability(null, 1672570800000L, 1673341200000L, room));
@@ -245,7 +245,7 @@ public class HotelServiceImplTest {
         when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservationToCancel));
         when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
 
-        hotelService.cancelReservation(UUID.randomUUID());
+        hotelService.cancelReservation(UUID.randomUUID().toString());
 
         verify(availabilityRepository).save(availabilityArgumentCaptor.capture());
         verify(reservationRepository).save(reservationArgumentCaptor.capture());
@@ -267,7 +267,7 @@ public class HotelServiceImplTest {
     void updateReservationStatus(Status status) {
         when(reservationRepository.findById(any())).thenReturn(Optional.ofNullable(reservation));
 
-        hotelService.updateReservationStatus(UUID.randomUUID(), status);
+        hotelService.updateReservationStatus(UUID.randomUUID().toString(), status);
 
         verify(reservationRepository).save(reservationArgumentCaptor.capture());
 

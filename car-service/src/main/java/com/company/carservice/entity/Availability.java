@@ -1,15 +1,13 @@
-package com.company.carservice.neo4j.entity;
+package com.company.carservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.neo4j.core.schema.*;
 
 import java.util.UUID;
 
-@Profile("neo4j")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,8 +15,8 @@ import java.util.UUID;
 @Node(labels = {"Availability"})
 public class Availability {
     @Id
-    @GeneratedValue(generatorClass = GeneratedValue.UUIDGenerator.class)
-    private UUID id;
+    @GeneratedValue
+    private String id;
 
     @Property(name = "start_date")
     private Long startDate;
@@ -26,6 +24,6 @@ public class Availability {
     @Property(name = "end_date")
     private Long endDate;
 
-    @Relationship(type = "IS_AVAILABLE", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "HAS_AVAILABILITY", direction = Relationship.Direction.OUTGOING)
     private Car car;
 }

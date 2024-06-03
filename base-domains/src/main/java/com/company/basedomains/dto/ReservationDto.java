@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationDto {
-    private UUID id;
+    private String id;
     private Status status;
     private boolean flightBooked;
     private boolean hotelBooked;

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Data
 public class RoomDto {
-    private UUID id;
+    private String id;
     private String title;
     @NotEmpty(message = "People Capacity of Room is required")
     @Min(value = 1, message = "People Capacity must be at least 1")

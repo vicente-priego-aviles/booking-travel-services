@@ -13,7 +13,7 @@ public class RoomReservationFiltersDto {
 
     @Schema(description = "Reservation ID. Required. ID gotten after flight reservation.")
     @NotNull(message = "reservation ID is required")
-    private UUID reservationID;
+    private String reservationID;
 
     @Schema(description = "Start Date of reservation. Required. Start date must be at 12:00:00 pm UTC")
     @ValidReservationStartDate

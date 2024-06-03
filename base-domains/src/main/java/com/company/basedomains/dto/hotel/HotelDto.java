@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 public class HotelDto {
-    private UUID id;
+    private String id;
     @NotEmpty(message = "Name is required")
     private String name;
     @NotEmpty(message = "Direction is required")

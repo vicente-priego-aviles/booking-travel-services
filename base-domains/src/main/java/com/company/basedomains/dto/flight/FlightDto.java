@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 public class FlightDto {
-    private UUID id;
+    private String id;
     @NotEmpty(message = "Reference is required")
     private String reference;
     @NotEmpty(message = "Airline is required")

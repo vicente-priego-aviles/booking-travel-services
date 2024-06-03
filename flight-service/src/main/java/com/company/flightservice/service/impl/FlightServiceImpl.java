@@ -44,8 +44,8 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional(readOnly = true)
-    public FlightDto findOne(UUID id) {
-        Flight flight = flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("FLIGHT", "id", id.toString()));
+    public FlightDto findOne(String id) {
+        Flight flight = flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("FLIGHT", "id", id));
         return modelMapper.map(flight, FlightDto.class);
     }
 
@@ -57,12 +57,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public ReservationDto bookFlight(UUID flightId) {
-        Flight flight = flightRepository.findById(flightId).orElseThrow(() -> new ResourceNotFoundException("FLIGHT", "id", flightId.toString()));
+    public ReservationDto bookFlight(String flightId) {
+        Flight flight = flightRepository.findById(flightId).orElseThrow(() -> new ResourceNotFoundException("FLIGHT", "id", flightId));
         Reservation reservation = null;
         if (flight != null && flight.getRemainingSeats() > 0) {
             reservation = new Reservation();
-            reservation.setId(UUID.randomUUID());
+            reservation.setId(UUID.randomUUID().toString());
             reservation.setFlight(flight);
             reservation.setStatus(Status.IN_PROGRESS);
             reservationRepository.save(reservation);
@@ -71,20 +71,20 @@ public class FlightServiceImpl implements FlightService {
 
             reservationProducer.send(modelMapper.map(reservation, ReservationDto.class));
         } else {
-            throw new NotBookableException("FLIGHT", "id", flightId.toString());
+            throw new NotBookableException("FLIGHT", "id", flightId);
         }
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UUID checkReservation(UUID reservationID) {
-        Reservation reservation = reservationRepository.findById(reservationID).orElseThrow(() -> new ResourceNotFoundException("RESERVATION", "id", reservationID.toString()));
+    public String checkReservation(String reservationID) {
+        Reservation reservation = reservationRepository.findById(reservationID).orElseThrow(() -> new ResourceNotFoundException("RESERVATION", "id", reservationID));
         return reservation.getId();
     }
 
     @Override
-    public void cancelReservation(UUID id) {
+    public void cancelReservation(String id) {
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation != null) {
             Flight flight = reservation.getFlight();
@@ -96,7 +96,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void updateReservationStatus(UUID id, Status status) {
+    public void updateReservationStatus(String id, Status status) {
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation != null) {
             reservation.setStatus(status);

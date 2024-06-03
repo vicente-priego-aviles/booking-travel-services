@@ -1,10 +1,13 @@
 package com.company.hotelservice.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Property;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.UUID;
 
@@ -12,20 +15,14 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table
 public class Availability {
     @Id
-    private UUID id;
+    @GeneratedValue
+    private String id;
+    @Property(name = "start_date")
     private Long startDate;
+    @Property(name = "end_date")
     private Long endDate;
-    @ManyToOne
+    @Relationship(type = "IS_AVAILABLE", direction = Relationship.Direction.INCOMING)
     private Room room;
-
-    @PrePersist
-    public void onCreate() {
-        if (id == null) {
-            id = UUID.randomUUID();
-        }
-    }
 }

@@ -1,16 +1,14 @@
-package com.company.carservice.neo4j.entity;
+package com.company.carservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.neo4j.core.schema.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Profile("neo4j")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,8 +16,8 @@ import java.util.UUID;
 @Node(labels = {"Car"})
 public class Car {
     @Id
-    @GeneratedValue(generatorClass = GeneratedValue.UUIDGenerator.class)
-    private UUID id;
+    @GeneratedValue
+    private String id;
 
     private String brand;
 
@@ -30,7 +28,7 @@ public class Car {
     @Property(name = "cost_per_day")
     private Long costPerDay;
 
-    @Relationship(type = "IS_AVAILABLE", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "HAS_AVAILABILITY", direction = Relationship.Direction.INCOMING)
     private List<Availability> availabilities;
 
 }

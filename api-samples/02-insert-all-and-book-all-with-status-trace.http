@@ -318,6 +318,9 @@ Content-Type: application/json
   "reservationID": "{{reservation_id}}"
 }
 
+###
+POST {{hostname}}/car-service/api/cars-booking/book/cancel/{{reservation_id}}
+
 ### Get All RESERVATIONS
 GET {{hostname}}/payment-service/api/payments
 
@@ -335,3 +338,15 @@ GET {{hostname}}/hotel-service/api/hotels-booking/book
 
 ### Get All CARS BOOKINGS
 GET {{hostname}}/car-service/api/cars-booking/book
+
+# QUERY FOR A SPECIFIC FLIGHT:
+# match(fr:FlightReservation)-[r]-(f) where fr.id = "a4813822-027b-4a39-a5c7-0e3849dd62f9" return fr,f
+
+# QUERY FOR A SPECIFIC HOTEL/ROOM:
+# match(hr:HotelReservation)-[r]-(room)-[r2]-(x) where hr.id = "a4813822-027b-4a39-a5c7-0e3849dd62f9" return hr,r,room,r2,x
+
+# QUERY FOR A SPECIFIC CAR:
+# match(cr:CarReservation)-[r]-(c)-[r2]-(a) where cr.id = "a4813822-027b-4a39-a5c7-0e3849dd62f9" return cr,r,c,r2,a
+
+# QUERY FOR A SPECIFIC RESERVATION:
+# match(r:Reservation) where r.id = "a4813822-027b-4a39-a5c7-0e3849dd62f9" return r

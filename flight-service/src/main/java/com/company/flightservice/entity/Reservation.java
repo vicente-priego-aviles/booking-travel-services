@@ -1,11 +1,14 @@
 package com.company.flightservice.entity;
 
 import com.company.basedomains.dto.Status;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.UUID;
 
@@ -13,13 +16,13 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table
+@Node(labels = {"FlightReservation"})
 public class Reservation {
     @Id
-    private UUID id;
-    @ManyToOne
+    private String id;
+
+    @Relationship(type = "BOOKED_FLIGHT", direction = Relationship.Direction.INCOMING)
     private Flight flight;
-    @Enumerated(EnumType.STRING)
+
     private Status status;
 }

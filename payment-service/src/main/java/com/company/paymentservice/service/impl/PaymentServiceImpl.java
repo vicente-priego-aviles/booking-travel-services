@@ -38,18 +38,18 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public ReservationDto payReservation(UUID id) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotBookableException("RESERVATION", "id", id.toString()));
+    public ReservationDto payReservation(String id) {
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotBookableException("RESERVATION", "id", id));
         double probability = Math.random();
         LOGGER.debug("PaymentServiceImpl: payReservation: probability = {}", probability);
         if (!reservation.isFlightBooked()) {
-            throw new PaymentException("FLIGHT", "id", reservation.getId().toString());
+            throw new PaymentException("FLIGHT", "id", reservation.getId());
         }
         if (!reservation.isHotelBooked()) {
-            throw new PaymentException("HOTEL", "id", reservation.getId().toString());
+            throw new PaymentException("HOTEL", "id", reservation.getId());
         }
         if (!reservation.isCarBooked()) {
-            throw new PaymentException("CAR", "id", reservation.getId().toString());
+            throw new PaymentException("CAR", "id", reservation.getId());
         }
         if (reservation.getStatus() != Status.IN_PROGRESS) {
             return modelMapper.map(reservation, ReservationDto.class);
@@ -67,7 +67,8 @@ public class PaymentServiceImpl implements PaymentService {
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    public void addReservation(UUID id, ReservationType reservationType) {
+    @Transactional
+    public void addReservation(String id, ReservationType reservationType) {
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation == null) {
             reservation = new Reservation();

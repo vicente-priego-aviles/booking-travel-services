@@ -1,10 +1,10 @@
 package com.company.carservice.helpers;
 
 import com.company.basedomains.dto.cars.CarReservationFiltersDto;
-import com.company.carservice.h2.entity.Availability;
-import com.company.carservice.h2.entity.Car;
-import com.company.carservice.h2.helpers.BookingAvailabilityHelper;
-import com.company.carservice.h2.helpers.dto.BookingAvailabilityDto;
+import com.company.carservice.entity.Availability;
+import com.company.carservice.entity.Car;
+import com.company.carservice.helpers.BookingAvailabilityHelper;
+import com.company.carservice.helpers.dto.BookingAvailabilityDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +39,7 @@ public class BookingAvailabilityHelperTest {
         availabilities.add(availability);
         availabilities.add(availability2);
         car = new Car();
+        car.setId(UUID.randomUUID().toString());
         car.setBrand("Mercedes-Benz");
         car.setModel("Clase A");
         car.setLicense("0000 AAA");
@@ -52,7 +53,7 @@ public class BookingAvailabilityHelperTest {
         carReservationFiltersDto.setStartDate(1672570800000L); // 01/01/2023 12:00:00 CET
         carReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        carReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(car, carReservationFiltersDto);
 
@@ -87,7 +88,7 @@ public class BookingAvailabilityHelperTest {
         carReservationFiltersDto.setStartDate(1672916400000L); // 05/01/2023 12:00:00 CET
         carReservationFiltersDto.setEndDate(1673341200000L); // 10/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        carReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(car, carReservationFiltersDto);
 
@@ -139,7 +140,7 @@ public class BookingAvailabilityHelperTest {
         carReservationFiltersDto.setStartDate(1673348400000L); // 10/01/2023 12:00:00 CET
         carReservationFiltersDto.setEndDate(1675155600000L); // 31/01/2023 10:00:00 CET
         UUID id = UUID.randomUUID();
-        carReservationFiltersDto.setReservationID(id);
+        carReservationFiltersDto.setReservationID(id.toString());
 
         BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(car, carReservationFiltersDto);
 

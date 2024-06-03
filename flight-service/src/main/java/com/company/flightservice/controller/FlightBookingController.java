@@ -79,7 +79,7 @@ public class FlightBookingController {
             description = "HTTP Status 200 OK"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getFlightById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDto> getFlightById(@PathVariable String id) {
         ResponseDto response = new ResponseDto(null, flightService.findOne(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -107,7 +107,7 @@ public class FlightBookingController {
             description = "HTTP Status 201 CREATED"
     )
     @PostMapping("/book/{flightId}")
-    public ResponseEntity<ResponseDto> bookFlight(@PathVariable UUID flightId){
+    public ResponseEntity<ResponseDto> bookFlight(@PathVariable String flightId){
         ResponseDto response = new ResponseDto(null, flightService.bookFlight(flightId));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -117,7 +117,7 @@ public class FlightBookingController {
             description = "Check if a reservation ID exists"
     )
     @GetMapping("/book/check/{reservationID}")
-    public ResponseEntity<ResponseDto> checkReservationID(@PathVariable UUID reservationID) {
+    public ResponseEntity<ResponseDto> checkReservationID(@PathVariable String reservationID) {
         ResponseDto response = new ResponseDto(null, flightService.checkReservation(reservationID));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
