@@ -318,9 +318,6 @@ Content-Type: application/json
   "reservationID": "{{reservation_id}}"
 }
 
-###
-POST {{hostname}}/car-service/api/cars-booking/book/cancel/{{reservation_id}}
-
 ### Get All RESERVATIONS
 GET {{hostname}}/payment-service/api/payments
 

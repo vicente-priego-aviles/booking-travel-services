@@ -17,9 +17,10 @@ We have to wait until the previous command has finished. After that, we build an
 <br>
 
 ### Starting the project
-We first start RabbitMQ docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
-<pre>$ docker start rabbitmq</pre>
+We first start RabbitMQ and Neo4J docker (for Kafka, just replace 'rabbitmq' by 'kafka'):
+<pre>$ docker start rabbitmq neo4j</pre>
 <br/>
+
 
 #### Authomatic startup of dockers ⚙️
 We have included the possibility of starting the dockers with only one command. The precondition is to have started the message broker (either RabbitMQ or Kafka) and then run the following command.
@@ -68,14 +69,11 @@ To test the project, we have added some IntelliJ HTTP Client files. You can find
 <b>❗⚠️IMPORTANT</b>: When trying to execute the /pay endpoint, it has a 50% chance of resulting on Status PAID and 50% chance of resulting on Status CANCELLED. So DO NOT expect to always get the same result because it is a RANDOM function. This is why file 02-insert-all-and-book-all-with-status-trace.http includes the abstraction of "run_cycle" explained above.
 
 ### Access Databases
-To access the databases, we have enabled the h2-console web client on each of the projects. For that, we have cleared the access on each of the IPs directly to the microservice. So with the following URLs you can access the h2 client:
+To access the databases, we just need to log into Neo4J web cliente. For this use the following information::
 
-| Microservice           | URL                              | Database URL           | Username | Password |
-|------------------------|----------------------------------|------------------------|----------|----------|
-| <b>Flight Service</b>  | http://localhost:8081/h2-console | jdbc:h2:mem:flights_db | sa       | password |
-| <b>Hotel Service</b>   | http://localhost:8082/h2-console | jdbc:h2:mem:hotels_db  | sa       | password |
-| <b>Car Service</b>     | http://localhost:8083/h2-console | jdbc:h2:mem:cars_db    | sa       | password |
-| <b>Payment Service</b> | http://localhost:8084/h2-console | jdbc:h2:mem:payment_db | sa       | password |
+| Microservice | URL                    | Connect URL            | Username | Password |
+|--------------|------------------------|------------------------|----------|----------|
+| <b>Neo4J</b> | http://localhost:7474/ | neo4j://localhost:7687 | neo4j    | password |
 
 
 ### Access RabbitMQ
