@@ -24,7 +24,6 @@ public class Hotel {
     private String direction;
     @Property(name = "cost_per_night")
     private Long costPerNight;
-
-    @Relationship(type = "HAS_ROOMS", direction = Relationship.Direction.INCOMING)
-    private List<Room> rooms;
+    @Property(name = "remaining_rooms")
+    private Long remainingRooms;
 }

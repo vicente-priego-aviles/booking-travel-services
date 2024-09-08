@@ -15,11 +15,10 @@ public class CarDto {
     private String brand;
     @NotEmpty(message = "Model is required")
     private String model;
-    @NotEmpty(message = "License is required")
-    private String license;
     @NotEmpty(message = "Cost per day is required")
     @Min(value = 0, message = "Cost per day can not be less than 0")
     private Long costPerDay;
-    @NotEmpty(message = "Availabilities is required")
-    private List<AvailabilityDto> availabilities;
+    @NotEmpty(message = "Remaining cars is required")
+    @Min(value = 1, message = "Remaining cars can not be less than 1")
+    private Long remainingCars;
 }

@@ -18,14 +18,8 @@ public class Reservation {
     @Id
     private String id;
 
-    @Relationship(type = "BOOKED_ROOM", direction = Relationship.Direction.INCOMING)
-    private Room room;
-
-    @Property(name = "start_date")
-    private Long startDate;
-
-    @Property(name = "end_date")
-    private Long endDate;
+    @Relationship(type = "BOOKED_HOTEL", direction = Relationship.Direction.INCOMING)
+    private Hotel hotel;
 
     private Status status;
 }

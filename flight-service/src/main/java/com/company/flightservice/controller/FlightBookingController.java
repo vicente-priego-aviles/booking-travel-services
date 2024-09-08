@@ -1,7 +1,7 @@
 package com.company.flightservice.controller;
 
-import com.company.basedomains.dto.flight.FlightDto;
 import com.company.basedomains.dto.ResponseDto;
+import com.company.basedomains.dto.flight.FlightDto;
 import com.company.flightservice.service.FlightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Tag(
         name = "API REST for Flight Booking",

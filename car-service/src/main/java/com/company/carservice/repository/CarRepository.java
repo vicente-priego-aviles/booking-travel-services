@@ -10,9 +10,4 @@ import java.util.UUID;
 
 @Repository
 public interface CarRepository extends Neo4jRepository<Car, String> {
-    @Query( "MATCH (c:Car) WHERE elementId(c) = $carId " +
-            "MATCH (a:Availability) WHERE elementId(a) = $availabilityId " +
-            "CREATE (a)-[:HAS_AVAILABILITY]->(c)" +
-            "RETURN count(a)")
-    int buildAvailabilityRelationship(@Param("carId") String carId, @Param("availabilityId") String availabilityId);
 }

@@ -17,8 +17,8 @@ public class HotelDto {
     @NotEmpty(message = "Cost Per Night is required")
     @Min(value = 0, message = "Cost Per Night can not be less than 0")
     private Long costPerNight;
-
-    @NotEmpty(message = "Rooms is required")
-    private List<RoomDto> rooms;
+    @NotEmpty(message = "RemainingRooms is required")
+    @Min(value = 1, message = "Remaining Rooms can not be less than 1")
+    private Long remainingRooms;
 
 }

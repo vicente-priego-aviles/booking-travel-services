@@ -9,19 +9,13 @@ import com.company.basedomains.exception.BookingTravelException;
 import com.company.basedomains.exception.NotBookableException;
 import com.company.basedomains.exception.ResourceNotFoundException;
 import com.company.basedomains.exception.ServiceException;
-import com.company.hotelservice.entity.Availability;
 import com.company.hotelservice.entity.Hotel;
 import com.company.hotelservice.entity.Reservation;
-import com.company.hotelservice.entity.Room;
-import com.company.hotelservice.repository.AvailabilityRepository;
 import com.company.hotelservice.repository.HotelRepository;
 import com.company.hotelservice.repository.ReservationRepository;
-import com.company.hotelservice.repository.RoomRepository;
-import com.company.hotelservice.stream.ReservationProducer;
-import com.company.hotelservice.helpers.BookingAvailabilityHelper;
-import com.company.hotelservice.helpers.dto.BookingAvailabilityDto;
 import com.company.hotelservice.service.APIClient;
 import com.company.hotelservice.service.HotelService;
+import com.company.hotelservice.stream.ReservationProducer;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,9 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -44,34 +36,13 @@ public class HotelServiceImpl implements HotelService {
     private APIClient apiClient;
     private ModelMapper modelMapper;
     private HotelRepository hotelRepository;
-    private RoomRepository roomRepository;
-    private AvailabilityRepository availabilityRepository;
     private ReservationRepository reservationRepository;
     private ReservationProducer reservationProducer;
-    private BookingAvailabilityHelper bookingAvailabilityHelper;
 
     @Override
     public List<HotelDto> insertAll(List<HotelDto> hotels) {
         List<Hotel> hotelsEntity = hotels.stream().map((hotel) -> modelMapper.map(hotel, Hotel.class)).toList();
-        List<Hotel> savedHotels = new ArrayList<>();
-        hotelsEntity.forEach((hotel) -> {
-            List<Room> rooms = hotel.getRooms();
-            hotel.setRooms(null);
-            hotel = hotelRepository.save(hotel);
-            Hotel finalHotel = hotel;
-            rooms = rooms.stream().peek((room) -> room.setHotel(finalHotel)).toList();
-            rooms.forEach((room) -> {
-                List<Availability> availabilities = room.getAvailabilities();
-                room.setAvailabilities(null);
-                room = roomRepository.save(room);
-                Room finalRoom = room;
-                availabilities = availabilities.stream().peek((availability) -> availability.setRoom(finalRoom)).toList();
-                availabilities = availabilityRepository.saveAll(availabilities);
-                room.setAvailabilities(availabilities);
-            });
-            hotel.setRooms(rooms);
-            savedHotels.add(hotel);
-        });
+        List<Hotel> savedHotels = hotelRepository.saveAll(hotelsEntity);
         return savedHotels.stream().map((hotel) -> modelMapper.map(hotel, HotelDto.class)).toList();
     }
 
@@ -98,7 +69,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Retry(name = "${spring.application.name}", fallbackMethod = "bookRoomCircuitBreakerFallback")
     @Override
-    public ReservationDto bookRoom(String roomId, RoomReservationFiltersDto roomReservationFiltersDto) {
+    public ReservationDto bookHotel(String hotelId, RoomReservationFiltersDto roomReservationFiltersDto) {
         LOGGER.debug("HotelServiceImpl.bookRoom: trying to use FLIGHT-SERVICE API");
         ResponseDto reservationResponse = apiClient.bookCheckReservationID(roomReservationFiltersDto.getReservationID());
         LOGGER.debug("HotelServiceImpl.bookRoom: ended call to FLIGHT-SERVICE API");
@@ -108,40 +79,22 @@ public class HotelServiceImpl implements HotelService {
             reservationID = reservationResponse.getData().toString();
         }
         if (reservationID == null) {
-            throw new NotBookableException("ROOM", "reservationID", roomReservationFiltersDto.getReservationID());
+            throw new NotBookableException("HOTEL", "reservationID", roomReservationFiltersDto.getReservationID());
         }
 
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("ROOM", "id", roomId));
-        LOGGER.debug("HotelServiceImpl.bookRoom - 1 : room.getId(): {}", room.getId());
-        LOGGER.debug("HotelServiceImpl.bookRoom - 4: room.getPeopleCapacity(): {}", room.getPeopleCapacity());
-        LOGGER.debug("HotelServiceImpl.bookRoom - 2: room.getAvailabilities(): {}", room.getAvailabilities());
-        LOGGER.debug("HotelServiceImpl.bookRoom - 3: room.getAvailabilities().size(): {}", room.getAvailabilities().size());
-        LOGGER.debug("HotelServiceImpl.bookRoom - 4: room.getHotel(): {}", room.getHotel());
-        BookingAvailabilityDto bookingAvailabilityDto = bookingAvailabilityHelper.calculateAvailabilities(room, roomReservationFiltersDto);
-        Availability availabilityBeforeReservation = bookingAvailabilityDto.getAvailabilityBeforeReservation();
-        Availability availabilityAfterReservation = bookingAvailabilityDto.getAvailabilityAfterReservation();
-        Availability availabilityBookable = bookingAvailabilityDto.getAvailabilityBookable();
-        List<Availability> availabilitiesToSaveWithRoom = bookingAvailabilityDto.getAvailabilitiesToSaveWithRoom();
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("HOTEL", "id", hotelId));
+        LOGGER.debug("HotelServiceImpl.bookRoom - 1 : room.getId(): {}", hotel.getId());
+        LOGGER.debug("HotelServiceImpl.bookRoom - 2: room.getRemainingRooms(): {}", hotel.getRemainingRooms());
 
-        if (availabilityBeforeReservation != null) {
-            availabilityBeforeReservation.setRoom(room);
-            availabilitiesToSaveWithRoom.add(availabilityBeforeReservation);
-            availabilityRepository.save(availabilityBeforeReservation);
+        if (hotel.getRemainingRooms() <= 0) {
+            throw new NotBookableException("HOTEL: NO ROOMS REMAINING", "id", roomReservationFiltersDto.getReservationID());
         }
-        if (availabilityAfterReservation != null) {
-            availabilityAfterReservation.setRoom(room);
-            availabilitiesToSaveWithRoom.add(availabilityAfterReservation);
-            availabilityRepository.save(availabilityAfterReservation);
-        }
-        availabilityRepository.delete(availabilityBookable);
-        room.setAvailabilities(availabilitiesToSaveWithRoom);
-        room = roomRepository.save(room);
+        hotel.setRemainingRooms(hotel.getRemainingRooms() - 1);
+        hotel = hotelRepository.save(hotel);
 
         Reservation reservation = new Reservation();
         reservation.setId(roomReservationFiltersDto.getReservationID());
-        reservation.setRoom(room);
-        reservation.setStartDate(roomReservationFiltersDto.getStartDate());
-        reservation.setEndDate(roomReservationFiltersDto.getEndDate());
+        reservation.setHotel(hotel);
         reservation.setStatus(Status.IN_PROGRESS);
         reservationRepository.save(reservation);
 
@@ -149,43 +102,24 @@ public class HotelServiceImpl implements HotelService {
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    public ReservationDto bookRoomCircuitBreakerFallback(String roomId, RoomReservationFiltersDto roomReservationFiltersDto, Throwable exception) throws Throwable {
+    public ReservationDto bookRoomCircuitBreakerFallback(String hotelId, RoomReservationFiltersDto roomReservationFiltersDto, Throwable exception) throws Throwable {
         LOGGER.error("Exception handled by HotelServiceImpl.bookRoomCircuitBreakerFallback", exception);
         throw (exception instanceof BookingTravelException) ? exception : new ServiceException("FLIGHT-SERVICE");
     }
 
-    @Transactional
-    Availability createAvailability(String id) {
-        Reservation reservation = reservationRepository.findById(id).orElse(null);
-        if (reservation != null) {
-            Room room = roomRepository.findById(reservation.getRoom().getId()).orElse(null);
-            if (room != null) {
-                Availability availability = new Availability();
-                availability.setStartDate(reservation.getStartDate());
-                availability.setEndDate(reservation.getEndDate());
-                availability.setRoom(room);
-                availability = availabilityRepository.save(availability);
-
-                return availability;
-            }
-        }
-        return null;
-    }
-
     @Override
     public void cancelReservation(String id) {
-        Availability availability = createAvailability(id);
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation != null) {
-            Room room = roomRepository.findById(reservation.getRoom().getId()).orElse(null);
-            if (room != null) {
-                room.getAvailabilities().add(availability);
-                roomRepository.save(room);
+            Hotel hotel = hotelRepository.findById(reservation.getHotel().getId()).orElse(null);
+            if (hotel != null) {
+                hotel.setRemainingRooms(hotel.getRemainingRooms() + 1);
+                hotelRepository.save(hotel);
 
                 reservation.setStatus(Status.CANCELLED);
                 reservationRepository.save(reservation);
             } else {
-                LOGGER.error("HotelServiceImpl: Invalid ROOM ID in the reservation object");
+                LOGGER.error("HotelServiceImpl: Invalid HOTEL ID in the reservation object");
             }
         } else {
             LOGGER.error("HotelServiceImpl: Invalid RESERVATION ID was found");

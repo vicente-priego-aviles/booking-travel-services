@@ -9,41 +9,13 @@ Content-Type: application/json
   "name": "Grand Hotel",
   "direction": "Calle Falsa 123, Torrevieja 03183 - Alicante",
   "costPerNight": 6300,
-  "rooms": [{
-    "title": "Habitacion individual A",
-    "peopleCapacity": 1,
-    "availabilities": [{
-      "startDate": 1000000000000,
-      "endDate": 3000000000000
-    }]
-  },{
-    "title": "Habitacion doble B",
-    "peopleCapacity": 2,
-    "availabilities": [{
-      "startDate": 1694988000000,
-      "endDate": 1695592800000
-    }]
-  }]
+  "remainingRooms": 10
 },
   {
   "name": "Little Hotel",
   "direction": "Calle Fake 123, Torrevieja 03183 - Alicante",
   "costPerNight": 4599,
-  "rooms": [{
-    "title": "Habitacion Gold",
-    "peopleCapacity": 2,
-    "availabilities": [{
-      "startDate": 1695160800000,
-      "endDate": 1695592800000
-    }]
-  },{
-    "title": "Habitacion Diamond",
-    "peopleCapacity": 4,
-    "availabilities": [{
-      "startDate": 1695420000000,
-      "endDate": 1695592800000
-    }]
-  }]
+  "remainingRooms": 10
 }]
 
 ### Get HOTEL
@@ -54,8 +26,6 @@ POST {{hostname}}/hotel-service/api/hotels-booking/book/0f61d493-6b00-43c4-951c-
 Content-Type: application/json
 
 {
-  "startDate": 1673352000000,
-  "endDate": 1673776800000,
   "reservationID": "b395a8d8-83d7-4c8d-a675-430a2db67793"
 }
 

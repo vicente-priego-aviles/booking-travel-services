@@ -23,12 +23,10 @@ public class Car {
 
     private String model;
 
-    private String license;
-
     @Property(name = "cost_per_day")
     private Long costPerDay;
 
-    @Relationship(type = "HAS_AVAILABILITY", direction = Relationship.Direction.INCOMING)
-    private List<Availability> availabilities;
+    @Property(name = "remaining_cars")
+    private Long remainingCars;
 
 }

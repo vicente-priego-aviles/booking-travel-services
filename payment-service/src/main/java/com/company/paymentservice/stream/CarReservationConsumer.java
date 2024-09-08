@@ -28,8 +28,6 @@ public class CarReservationConsumer {
             LOGGER.info("{} - ReservationDto: {}", this.getClass().getName(), message.getPayload());
             LOGGER.info("{} - message.getPayload().getId(): {}", this.getClass().getName(), message.getPayload().getId());
             LOGGER.info("{} - message.getPayload().getStatus(): {}", this.getClass().getName(), message.getPayload().getStatus());
-            LOGGER.info("{} - message.getPayload().getStartDate(): {}", this.getClass().getName(), message.getPayload().getStartDate());
-            LOGGER.info("{} - message.getPayload().getEndDate(): {}", this.getClass().getName(), message.getPayload().getEndDate());
             LOGGER.info("{} - message.getPayload().getCar().getId(): {}", this.getClass().getName(), message.getPayload().getCar().getId());
             LOGGER.info("{} - message.getPayload().getCar().getBrand(): {}", this.getClass().getName(), message.getPayload().getCar().getBrand());
             LOGGER.info("{} - message.getPayload().getCar().getModel(): {}", this.getClass().getName(), message.getPayload().getCar().getModel());
