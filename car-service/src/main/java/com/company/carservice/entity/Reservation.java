@@ -22,11 +22,5 @@ public class Reservation {
     @Relationship(type = "BOOKED_CAR", direction = Relationship.Direction.INCOMING)
     private Car car;
 
-    @Property(name = "start_date")
-    private Long startDate;
-
-    @Property(name = "end_date")
-    private Long endDate;
-
     private Status status;
 }

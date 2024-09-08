@@ -5,41 +5,26 @@ Content-Type: application/json
 [{
   "brand": "Mercedes-Benz",
   "model": "Class A",
-  "license": "AAA-0000",
   "costPerDay": 89.50,
-  "availabilities": [{
-    "startDate": 1693519200000,
-    "endDate": 1693864800000
-  },{
-    "startDate": 1694296800000,
-    "endDate": 1695420000000
-  }]
+  "remainingCars": 10
 },
   {
     "brand": "Mercedes-Benz AMG",
     "model": "Class EQE",
-    "license": "EQE-0000",
     "costPerDay": 236.00,
-    "availabilities": [{
-      "startDate": 1695074400000,
-      "endDate": 1695506400000
-    }]
+    "remainingCars": 10
   },
   {
     "brand": "Mercedes-Benz AMG",
     "model": "Class EQS",
-    "license": "SQE-0000",
     "costPerDay": 298.47,
-    "availabilities": [{
-      "startDate": 1000000000000,
-      "endDate": 3000000000000
-    }]
+    "remainingCars": 10
   }]
 
 > {%
     if (response.status === 201 && response.body.data != undefined ) {
         for (let i = 0; i < response.body.data.length; i++) {
-            if (response.body.data[i].license == "SQE-0000") {
+            if (response.body.data[i].license == "Class A") {
                 client.global.set("car_id", response.body.data[i].id);
                 break;
             }
@@ -55,52 +40,19 @@ Content-Type: application/json
   "name": "Grand Hotel",
   "direction": "Calle Falsa 123, Torrevieja 03183 - Alicante",
   "costPerNight": 6300,
-  "rooms": [{
-    "title": "Habitacion individual A",
-    "peopleCapacity": 1,
-    "availabilities": [{
-      "startDate": 1000000000000,
-      "endDate": 3000000000000
-    }]
-  },{
-    "title": "Habitacion doble B",
-    "peopleCapacity": 2,
-    "availabilities": [{
-      "startDate": 1694988000000,
-      "endDate": 1695592800000
-    }]
-  }]
+  "remainingRooms": 10
 },
   {
     "name": "Little Hotel",
     "direction": "Calle Fake 123, Torrevieja 03183 - Alicante",
     "costPerNight": 4599,
-    "rooms": [{
-      "title": "Habitacion Gold",
-      "peopleCapacity": 2,
-      "availabilities": [{
-        "startDate": 1695160800000,
-        "endDate": 1695592800000
-      }]
-    },{
-      "title": "Habitacion Diamond",
-      "peopleCapacity": 4,
-      "availabilities": [{
-        "startDate": 1695420000000,
-        "endDate": 1695592800000
-      }]
-    }]
+    "remainingRooms": 10
   }]
 > {%
     if (response.status === 201 && response.body.data != undefined ) {
         for (let i = 0; i < response.body.data.length; i++) {
-            if (response.body.data[i].name == "Grand Hotel" && response.body.data[i].rooms != undefined && response.body.data[i].rooms.length > 0) {
-                for (let j = 0; j < response.body.data[i].rooms.length; j++) {
-                    if (response.body.data[i].rooms[j].title == "Habitacion individual A") {
-                        client.global.set("room_id", response.body.data[i].rooms[j].id);
-                        break;
-                    }
-                }
+            if (response.body.data[i].name == "Grand Hotel") {
+                client.global.set("hotel_id", response.body.data[i].id);
             }
         }
     }
@@ -168,12 +120,10 @@ if (response.status === 201 && response.body.data != undefined ) {
  %}
 
 ### Book a HOTEL
-POST {{hostname}}/hotel-service/api/hotels-booking/book/{{room_id}}
+POST {{hostname}}/hotel-service/api/hotels-booking/book/{{hotel_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1673352000000,
-  "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }
 
@@ -182,8 +132,6 @@ POST {{hostname}}/car-service/api/cars-booking/book/{{car_id}}
 Content-Type: application/json
 
 {
-  "startDate": 1673352000000,
-  "endDate": 1673776800000,
   "reservationID": "{{reservation_id}}"
 }
 

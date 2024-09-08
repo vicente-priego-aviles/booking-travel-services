@@ -90,9 +90,9 @@ public class HotelController {
             responseCode = "201",
             description = "HTTP Status 201 CREATED"
     )
-    @PostMapping("/book/{roomId}")
-    public ResponseEntity<ResponseDto> bookRoom(@PathVariable String roomId, @RequestBody @Valid RoomReservationFiltersDto roomReservationFiltersDto) {
-        ResponseDto response = new ResponseDto(null, hotelService.bookRoom(roomId, roomReservationFiltersDto));
+    @PostMapping("/book/{hotelId}")
+    public ResponseEntity<ResponseDto> bookHotel(@PathVariable String hotelId, @RequestBody @Valid RoomReservationFiltersDto roomReservationFiltersDto) {
+        ResponseDto response = new ResponseDto(null, hotelService.bookHotel(hotelId, roomReservationFiltersDto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

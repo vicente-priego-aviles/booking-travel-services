@@ -14,6 +14,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @SpringBootApplication(scanBasePackages = {"com.company.carservice, com.company.basedomains"})
 @OpenAPIDefinition(

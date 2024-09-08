@@ -13,7 +13,7 @@ public interface HotelService {
     public List<HotelDto> findAll();
     public HotelDto findOne(String id);
     public List<ReservationDto> getAllBookings();
-    public ReservationDto bookRoom(String roomId, RoomReservationFiltersDto roomReservationDto);
+    public ReservationDto bookHotel(String hotelId, RoomReservationFiltersDto roomReservationDto);
     public void cancelReservation(String id);
     public void updateReservationStatus(String id, Status status);
 }

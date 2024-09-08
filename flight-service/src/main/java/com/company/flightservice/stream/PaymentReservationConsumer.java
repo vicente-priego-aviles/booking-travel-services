@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 
 @Component
@@ -42,11 +41,11 @@ public class PaymentReservationConsumer {
     }
 
     private void cancel(ReservationDto reservation) {
-        flightService.cancelReservation(reservation.getId());
+        flightService.cancelReservation(reservation.getId().toString());
     }
 
     private void update(ReservationDto reservation) {
-        flightService.updateReservationStatus(reservation.getId(), reservation.getStatus());
+        flightService.updateReservationStatus(reservation.getId().toString(), reservation.getStatus());
     }
 
 }

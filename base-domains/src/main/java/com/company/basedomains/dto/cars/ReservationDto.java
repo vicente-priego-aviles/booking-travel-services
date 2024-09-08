@@ -8,7 +8,5 @@ import java.util.UUID;
 public class ReservationDto {
     private String id;
     private CarDto car;
-    private Long startDate;
-    private Long endDate;
     private String status;
 }

@@ -27,9 +27,7 @@ public class HotelReservationConsumer {
             LOGGER.info("{} - ReservationDto: {}", this.getClass().getName(), message.getPayload());
             LOGGER.info("{} - message.getPayload().getId(): {}", this.getClass().getName(), message.getPayload().getId());
             LOGGER.info("{} - message.getPayload().getStatus(): {}", this.getClass().getName(), message.getPayload().getStatus());
-            LOGGER.info("{} - message.getPayload().getStartDate(): {}", this.getClass().getName(), message.getPayload().getStartDate());
-            LOGGER.info("{} - message.getPayload().getEndDate(): {}", this.getClass().getName(), message.getPayload().getEndDate());
-            LOGGER.info("{} - message.getPayload().getCar().getId(): {}", this.getClass().getName(), message.getPayload().getRoom().getId());
+            LOGGER.info("{} - message.getPayload().getHotel().getId(): {}", this.getClass().getName(), message.getPayload().getHotel().getId());
             paymentService.addReservation(message.getPayload().getId(), ReservationType.HOTEL);
         };
     }
